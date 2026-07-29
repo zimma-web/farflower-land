@@ -22,7 +22,7 @@ import type { CreateConnectorFn } from "wagmi";
 export const sequenceConnector = sequenceWallet({
   defaultNetwork: "polygon",
   connectOptions: {
-    app: "Sunflower Land",
+    app: "Farflower Land",
     projectAccessKey: CONFIG.SEQUENCE_ACCESS_KEY,
     settings: {
       theme: "dark",
@@ -42,7 +42,7 @@ export const walletConnectConnector = walletConnect({
 export const metaMaskConnector = metaMask();
 
 export const coinbaseConnector = coinbaseWallet({
-  appName: "Sunflower Land",
+  appName: "Farflower Land",
   appLogoUrl: "https://sunflower-land.com/game-assets/brand/512px.png",
 });
 

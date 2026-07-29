@@ -174,8 +174,8 @@ export const LevelUp: React.FC<Props> = ({
   }, []);
 
   const shareMessage = ascension
-    ? `Just reached level ${level} of Ascension ${ascension} in Sunflower Land! So proud of my progress in this game. 🌻🚀 \n\n https://www.sunflower-land.com \n\n #SunflowerLand #LevelUp`
-    : `Just reached level ${level} in Sunflower Land! So proud of my progress in this game. 🌻🚀 \n\n https://www.sunflower-land.com \n\n #SunflowerLand #LevelUp`;
+    ? `Just reached level ${level} of Ascension ${ascension} in Farflower Land! So proud of my progress in this game. 🌻🚀 \n\n #FarflowerLand #LevelUp`
+    : `Just reached level ${level} in Farflower Land! So proud of my progress in this game. 🌻🚀 \n\n #FarflowerLand #LevelUp`;
 
   const clicked = (method: "Reddit" | "Twitter" | "Telegram" | "Facebook") => {
     // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?sjid=18434190870996612736-AP&client_type=gtag#share

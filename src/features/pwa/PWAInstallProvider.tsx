@@ -73,7 +73,7 @@ export const PWAInstallProvider: React.FC<PWAInstallProviderProps> = ({
         manual-apple="true"
         manual-chrome="true"
         manifest-url="/pwa/manifest.webmanifest"
-        name="Sunflower Land"
+        name="Farflower Land"
         description="🧑‍🌾 Install our app for a more seamless farming experience. Enjoy full-screen action, easy access, and exclusive features."
         icon="pwa/icons/pwa-64x64.png"
       />

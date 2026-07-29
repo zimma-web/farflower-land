@@ -28,7 +28,7 @@ export const MilestoneReached: React.FC<Props> = ({
   milestoneName,
   onClose,
 }) => {
-  const shareMessage = `Just reached the milestone ${milestoneName} in Sunflower Land! So proud of my progress in this game. 🌻🚀 \n\n https://www.sunflower-land.com \n\n #SunflowerLand #LevelUp`;
+  const shareMessage = `Just reached the milestone ${milestoneName} in Farflower Land! So proud of my progress in this game. 🌻🚀 \n\n #FarflowerLand #LevelUp`;
 
   const { t } = useAppTranslation();
 
