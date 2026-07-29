@@ -1,18 +1,18 @@
 {
   "miniapp": {
     "version": "1",
-    "name": "Sunflower Land",
-    "iconUrl": "https://sunflower-land.com/play/farcaster/icon.png",
-    "homeUrl": "https://sunflower-land.com/play",
-    "imageUrl": "https://sunflower-land.com/play/farcaster/farcaster_banner.png",
+    "name": "Farflower Land",
+    "iconUrl": "https://farflower-land.vercel.app/pwa/icons/pwa-512x512.png",
+    "homeUrl": "https://farflower-land.vercel.app/",
+    "imageUrl": "https://farflower-land.vercel.app/pwa/icons/pwa-512x512.png",
     "buttonTitle": "🚩 Play",
-    "splashImageUrl": "https://sunflower-land.com/play/farcaster/icon.png",
+    "splashImageUrl": "https://farflower-land.vercel.app/pwa/icons/pwa-512x512.png",
     "splashBackgroundColor": "#63c74d",
     "requiredChains": ["eip155:8453"],
     "requiredCapabilities": ["actions.signIn", "wallet.getEthereumProvider"],
     "primaryCategory": "games",
     "tags": ["games", "rewards", "social", "earn", "farming"],
-    "tagLine": "Harvest crops, raise chickens, and build your farm in this cozy farming game!",
-    "description": "Sunflower Land is a cozy game where you farm, collect NFTs & build your empire."
+    "tagLine": "Harvest crops, plant seeds, and build your farm on Farcaster!",
+    "description": "Farflower Land is a cozy farming mini app on Farcaster."
   }
 }
