@@ -53,4 +53,7 @@ cache
 /.claude/
 
 /*.json
+!tsconfig.json
+!package.json
+!vercel.json
 /docs/superpowers/
