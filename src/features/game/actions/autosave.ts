@@ -35,6 +35,7 @@ type Request = {
   deviceTrackerId: string;
   transactionId: string;
   state: GameState;
+  wallet?: string;
 };
 
 const API_URL = CONFIG.API_URL;
@@ -132,7 +133,10 @@ let autosaveErrors = 0;
 
 export async function autosave(request: Request, retries = 0) {
   if (request.state) {
-    saveFarmToSupabase(request.wallet || "default_user", request.state);
+    saveFarmToSupabase(
+      request.wallet || String(request.farmId) || "default_user",
+      request.state,
+    );
   }
 
   if (!API_URL) return { verified: true };
