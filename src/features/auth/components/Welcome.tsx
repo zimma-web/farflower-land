@@ -68,22 +68,6 @@ export const Welcome: React.FC = () => {
         </div>
       </Button>
 
-      <div className="flex justify-between items-center">
-        <a href="https://discord.gg/sunflowerland" className="mr-4">
-          <img
-            src="https://img.shields.io/discord/880987707214544966?label=Sunflower%20Land&logo=Discord&style=social"
-            alt="Discord: Sunflower Land"
-          />
-        </a>
-        <a
-          href="https://docs.sunflower-land.com/getting-started/how-to-start"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline font-secondary text-sm"
-        >
-          {t("welcome.needHelp")}
-        </a>
-      </div>
     </div>
   );
 };

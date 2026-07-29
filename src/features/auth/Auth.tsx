@@ -110,8 +110,6 @@ export const Auth: React.FC<Props> = ({ showOfflineModal }) => {
             )}
           </Panel>
         )}
-        <SystemMessageWidget />
-        <Game3WinnerWidget />
       </Modal>
       {!authState.matches("connected") && !authState.matches("visiting") && (
         <LoginSettings />
