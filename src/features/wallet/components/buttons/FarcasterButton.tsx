@@ -7,13 +7,6 @@ import { type Connector, type CreateConnectorFn, useConnectors } from "wagmi";
 export const FarcasterButton: React.FC<{
   onConnect: (connector: Connector | CreateConnectorFn) => void;
 }> = ({ onConnect }) => {
-  const connectors = useConnectors();
-
-  const eip6963Connectors = connectors.filter(
-    (connector) => connector.name === "Farcaster",
-  );
-
-  if (eip6963Connectors.length === 0) return null;
 
   return (
     <Button
