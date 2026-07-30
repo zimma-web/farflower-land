@@ -25,7 +25,10 @@ export async function loginRequest(request: Request) {
   });
 
   if (response.status >= 400) {
-    throw new Error(ERRORS.LOGIN_SERVER_ERROR);
+    const body = await response.json().catch(() => null);
+    // eslint-disable-next-line no-console
+    console.error("Farcaster Session API Error:", response.status, body);
+    throw new Error(body?.error || ERRORS.LOGIN_SERVER_ERROR);
   }
 
   return { token };
@@ -89,11 +92,12 @@ export function decodeToken(token: string): Token {
   // identity into the small session shape expected by the existing auth UI.
   // The API remains authoritative: a session is accepted only after
   // `/api/session` verifies the original JWT.
-  if (!decoded.userAccess && typeof decoded.sub === "number") {
+  const fid = decoded.sub != null ? Number(decoded.sub) : NaN;
+  if (!decoded.userAccess && !isNaN(fid)) {
     return {
       ...decoded,
-      address: `fid:${decoded.sub}`,
-      farmId: decoded.sub,
+      address: `fid:${fid}`,
+      farmId: fid,
       userAccess: {
         withdraw: false,
         createFarm: true,

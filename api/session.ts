@@ -31,10 +31,11 @@ export default async function handler(request: Request, response: Response) {
     const database = getAdminDatabase();
     const now = new Date().toISOString();
 
+    const fid = Number(identity.sub);
     const { data: player, error: playerError } = await database
       .from("players")
       .upsert(
-        { farcaster_fid: identity.sub, last_seen_at: now },
+        { farcaster_fid: fid, last_seen_at: now },
         { onConflict: "farcaster_fid" },
       )
       .select("id, farcaster_fid")
