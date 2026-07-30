@@ -1,4 +1,4 @@
-export const DEFAULT_FARM_STATE = {
+const DEFAULT_FARM_STATE = {
   id: 1,
   balance: 0,
   coins: 50,
@@ -86,3 +86,5 @@ export const DEFAULT_FARM_STATE = {
   mailbox: { read: [] },
   announcements: {},
 };
+
+module.exports = { DEFAULT_FARM_STATE };

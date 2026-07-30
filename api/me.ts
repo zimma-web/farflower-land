@@ -1,18 +1,8 @@
-import { getAdminDatabase } from "./_lib/supabase";
-import { requireFarcasterUser } from "./_lib/auth";
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { getAdminDatabase } = require("./_lib/supabase");
+const { requireFarcasterUser } = require("./_lib/auth");
 
-type Request = {
-  method?: string;
-  headers: Record<string, string | string[] | undefined>;
-};
-
-type Response = {
-  status: (code: number) => Response;
-  json: (body: unknown) => void;
-  setHeader: (name: string, value: string) => void;
-};
-
-export default async function handler(request: Request, response: Response) {
+module.exports = async function handler(request: any, response: any) {
   response.setHeader("Cache-Control", "no-store");
 
   if (request.method !== "GET") {
@@ -38,10 +28,13 @@ export default async function handler(request: Request, response: Response) {
     response.status(200).json({ player: data });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
-    const status = error instanceof Error && error.name === "UnauthorizedError" ? 401 : 500;
+    const status =
+      error instanceof Error && error.name === "UnauthorizedError" ? 401 : 500;
 
-    // Do not expose database or token-verification details to a game client.
+    // eslint-disable-next-line no-console
     console.error("GET /api/me failed", error);
-    response.status(status).json({ error: status === 401 ? message : "Unable to load player" });
+    response
+      .status(status)
+      .json({ error: status === 401 ? message : "Unable to load player" });
   }
-}
+};

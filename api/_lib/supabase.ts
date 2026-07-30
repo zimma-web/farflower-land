@@ -1,6 +1,7 @@
-import { createClient } from "@supabase/supabase-js";
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { createClient } = require("@supabase/supabase-js");
 
-export function getAdminDatabase() {
+function getAdminDatabase() {
   const url =
     process.env.NEXT_PUBLIC_SUPABASE_URL ??
     process.env.VITE_SUPABASE_URL ??
@@ -15,3 +16,5 @@ export function getAdminDatabase() {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }
+
+module.exports = { getAdminDatabase };

@@ -1,23 +1,13 @@
-import { requireFarcasterUser } from "./_lib/auth";
-import { getAdminDatabase } from "./_lib/supabase";
-import { DEFAULT_FARM_STATE } from "./_lib/defaultFarm";
-
-type Request = {
-  method?: string;
-  headers: Record<string, string | string[] | undefined>;
-};
-
-type Response = {
-  status: (code: number) => Response;
-  json: (body: unknown) => void;
-  setHeader: (name: string, value: string) => void;
-};
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { requireFarcasterUser } = require("./_lib/auth");
+const { getAdminDatabase } = require("./_lib/supabase");
+const { DEFAULT_FARM_STATE } = require("./_lib/defaultFarm");
 
 function freshFarmState() {
   return JSON.parse(JSON.stringify(DEFAULT_FARM_STATE));
 }
 
-export default async function handler(request: Request, response: Response) {
+module.exports = async function handler(request: any, response: any) {
   response.setHeader("Cache-Control", "no-store");
   if (request.method !== "POST") {
     response.status(405).json({ error: "Method not allowed" });
@@ -89,4 +79,4 @@ export default async function handler(request: Request, response: Response) {
     const status = isAuthError ? 401 : 500;
     response.status(status).json({ error: message });
   }
-}
+};

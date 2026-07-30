@@ -1,8 +1,5 @@
-import { createClient } from "@farcaster/quick-auth";
-
-type RequestLike = {
-  headers: Record<string, string | string[] | undefined>;
-};
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { createClient } = require("@farcaster/quick-auth");
 
 const quickAuth = createClient();
 
@@ -13,7 +10,7 @@ function appDomain() {
   return new URL(origin).host;
 }
 
-export async function requireFarcasterUser(request: RequestLike) {
+async function requireFarcasterUser(request: any) {
   const value = request.headers.authorization;
   const authorization = Array.isArray(value) ? value[0] : value;
 
@@ -36,3 +33,5 @@ export async function requireFarcasterUser(request: RequestLike) {
     throw error;
   }
 }
+
+module.exports = { requireFarcasterUser };
