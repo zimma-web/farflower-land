@@ -1,3 +1,7 @@
+import Decimal from "decimal.js-light";
+import type { GameState, InventoryItemName } from "../types/game";
+import { OFFLINE_FARM } from "./landData";
+
 if (typeof (Number.prototype as any).toNumber !== "function") {
   (Number.prototype as any).toNumber = function () {
     return Number(this);
