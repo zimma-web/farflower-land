@@ -1,6 +1,6 @@
 import jwt_decode from "jwt-decode";
+import { sdk } from "@farcaster/miniapp-sdk";
 import { wallet } from "lib/blockchain/wallet";
-import { CONFIG } from "lib/config";
 import { ERRORS } from "lib/errors";
 
 type Request = {
@@ -9,26 +9,24 @@ type Request = {
   transactionId: string;
 };
 
-const API_URL = CONFIG.API_URL;
-
 export async function loginRequest(request: Request) {
-  const response = await window.fetch(`${API_URL}/login`, {
+  // A wallet signature by itself is not a Farcaster identity. Quick Auth gives
+  // us a short-lived Farcaster JWT which the API verifies against our domain.
+  // `request` remains part of the function signature to keep the existing
+  // wallet UI contract intact while the auth flow is migrated.
+  void request;
+  const { token } = await sdk.quickAuth.getToken();
+  const response = await window.fetch(`${window.location.origin}/api/session`, {
     method: "POST",
     headers: {
       "content-type": "application/json;charset=UTF-8",
-      "X-Transaction-ID": request.transactionId,
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({
-      address: request.address,
-      signature: request.signature,
-    }),
   });
 
   if (response.status >= 400) {
     throw new Error(ERRORS.LOGIN_SERVER_ERROR);
   }
-
-  const { token } = await response.json();
 
   return { token };
 }
@@ -86,6 +84,25 @@ export function decodeToken(token: string): Token {
     // SSO token puts fields in the properties so we need to elevate them
     ...decoded.properties,
   };
+
+  // Quick Auth tokens identify players by Farcaster FID (`sub`). Convert that
+  // identity into the small session shape expected by the existing auth UI.
+  // The API remains authoritative: a session is accepted only after
+  // `/api/session` verifies the original JWT.
+  if (!decoded.userAccess && typeof decoded.sub === "number") {
+    return {
+      ...decoded,
+      address: `fid:${decoded.sub}`,
+      farmId: decoded.sub,
+      userAccess: {
+        withdraw: false,
+        createFarm: true,
+        sync: true,
+        mintCollectible: false,
+        verified: true,
+      },
+    };
+  }
 
   return decoded;
 }

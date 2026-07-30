@@ -12,8 +12,6 @@ import { AUTO_SAVE_INTERVAL } from "../expansion/Game";
 import { flushMetrics } from "../lib/interactionMetrics";
 import { getRecordHash } from "lib/stateHash";
 
-import { saveFarmToSupabase } from "lib/supabaseStorage";
-
 type StateHash = Record<keyof GameState, string>;
 
 /**
@@ -132,13 +130,6 @@ export async function autosaveRequest(
 let autosaveErrors = 0;
 
 export async function autosave(request: Request, retries = 0) {
-  if (request.state) {
-    saveFarmToSupabase(
-      request.wallet || String(request.farmId) || "default_user",
-      request.state,
-    );
-  }
-
   if (!API_URL) return { verified: true };
 
   try {

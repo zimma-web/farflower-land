@@ -11,3 +11,15 @@ create table if not exists public.players (
 
 alter table public.players enable row level security;
 revoke all on table public.players from anon, authenticated;
+
+create table if not exists public.game_farms (
+  id bigint generated always as identity primary key,
+  player_id uuid not null unique references public.players(id) on delete cascade,
+  state jsonb not null,
+  revision integer not null default 1,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.game_farms enable row level security;
+revoke all on table public.game_farms from anon, authenticated;
