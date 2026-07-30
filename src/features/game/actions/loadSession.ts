@@ -56,9 +56,6 @@ export type SocialDetails = {
   disabled?: boolean;
 };
 
-import { decodeToken } from "features/auth/actions/login";
-import { loadFarmFromSupabase } from "lib/supabaseStorage";
-
 const API_URL = CONFIG.API_URL;
 const API2_URL = CONFIG.API2_URL;
 
@@ -68,30 +65,6 @@ export async function loadSession(
   request: Request,
   retries = 0,
 ): Promise<Response> {
-  // If token is local farflower session or API URL is unavailable/fails, load directly from Supabase
-  if (request.token?.includes("farflower_sig")) {
-    const decoded = decodeToken(request.token);
-    const address = request.wallet || decoded.address || "0x_default";
-    const supabaseResult = await loadFarmFromSupabase(address);
-
-    return {
-      farmAddress: address,
-      sessionId: request.transactionId || "session_1",
-      farmId: supabaseResult.farmId,
-      game: makeGame(supabaseResult.game),
-      deviceTrackerId: "tracker_1",
-      announcements: {},
-      verified: true,
-      moderation: { muted: false },
-      analyticsId: "analytics_1",
-      purchases: [],
-      oauthNonce: "nonce_1",
-      prices: { sfl: { usd: 1, timestamp: Date.now() } },
-      apiKey: "farflower_key",
-      totalHelpedToday: 0,
-    };
-  }
-
   try {
     if (loadSessionErrors) {
       await new Promise((res) => setTimeout(res, loadSessionErrors * 5000));
@@ -252,30 +225,13 @@ export async function loadSession(
       banReason,
     };
   } catch (e) {
+    // First attempt goes to API2 - retry once against the original API
+    // before surfacing the error.
     if (retries === 0) {
       return await loadSession(request, retries + 1);
     }
 
-    const decoded = request.token ? decodeToken(request.token) : { address: "" };
-    const address = request.wallet || decoded.address || "0x_default";
-    const supabaseResult = await loadFarmFromSupabase(address);
-
-    return {
-      farmAddress: address,
-      sessionId: request.transactionId || "session_1",
-      farmId: supabaseResult.farmId,
-      game: makeGame(supabaseResult.game),
-      deviceTrackerId: "tracker_1",
-      announcements: {},
-      verified: true,
-      moderation: { muted: false },
-      analyticsId: "analytics_1",
-      purchases: [],
-      oauthNonce: "nonce_1",
-      prices: { sfl: { usd: 1, timestamp: Date.now() } },
-      apiKey: "farflower_key",
-      totalHelpedToday: 0,
-    };
+    throw e;
   }
 }
 

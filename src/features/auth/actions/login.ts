@@ -11,38 +11,26 @@ type Request = {
 
 const API_URL = CONFIG.API_URL;
 
-import { loadFarmFromSupabase } from "lib/supabaseStorage";
-
-function generateLocalToken(address: string, farmId: number): string {
-  const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
-  const payload = btoa(
-    JSON.stringify({
-      address: address.toLowerCase(),
-      exp: Math.floor(Date.now() / 1000) + 86400 * 365,
-      userAccess: {
-        withdraw: true,
-        createFarm: true,
-        sync: true,
-        mintCollectible: true,
-        verified: true,
-      },
-      farmId,
-      iat: Math.floor(Date.now() / 1000),
-    }),
-  );
-  return `${header}.${payload}.farflower_sig`;
-}
-
 export async function loginRequest(request: Request) {
-  try {
-    const farm = await loadFarmFromSupabase(request.address);
-    const farmId = farm ? Number(farm.farmId) : 1;
-    const token = generateLocalToken(request.address, farmId);
-    return { token };
-  } catch {
-    const token = generateLocalToken(request.address, 1);
-    return { token };
+  const response = await window.fetch(`${API_URL}/login`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json;charset=UTF-8",
+      "X-Transaction-ID": request.transactionId,
+    },
+    body: JSON.stringify({
+      address: request.address,
+      signature: request.signature,
+    }),
+  });
+
+  if (response.status >= 400) {
+    throw new Error(ERRORS.LOGIN_SERVER_ERROR);
   }
+
+  const { token } = await response.json();
+
+  return { token };
 }
 
 const host = window.location.host.replace(/^www\./, "");

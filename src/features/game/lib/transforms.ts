@@ -1,53 +1,23 @@
 import Decimal from "decimal.js-light";
+
 import type { GameState, InventoryItemName } from "../types/game";
-import { OFFLINE_FARM } from "./landData";
-
-if (typeof (Number.prototype as any).toNumber !== "function") {
-  (Number.prototype as any).toNumber = function () {
-    return Number(this);
-  };
-}
-
-export function safeDecimal(val: any): Decimal {
-  if (val === undefined || val === null) return new Decimal(0);
-  if (val instanceof Decimal) return val;
-  if (typeof val === "number" || typeof val === "string")
-    return new Decimal(val);
-  if (typeof val === "object") {
-    if (typeof val.toNumber === "function") return val;
-    if (Array.isArray(val.d) && typeof val.d[0] === "number") {
-      const s = val.s ?? 1;
-      const e = val.e ?? 0;
-      const d = val.d[0];
-      return new Decimal(s * d * Math.pow(10, e));
-    }
-  }
-  try {
-    return new Decimal(val);
-  } catch {
-    return new Decimal(0);
-  }
-}
-
-
 
 /**
  * Converts API response into a game state
  */
-export function makeGame(rawFarm: any): GameState {
-  const farm = { ...OFFLINE_FARM, ...rawFarm };
+export function makeGame(farm: any): GameState {
   return {
-    inventory: Object.keys(farm.inventory || {}).reduce(
+    inventory: Object.keys(farm.inventory).reduce(
       (items, item) => ({
         ...items,
-        [item]: safeDecimal(farm.inventory[item]),
+        [item]: new Decimal(farm.inventory[item]),
       }),
       {} as Record<InventoryItemName, Decimal>,
     ),
-    previousInventory: Object.keys(farm.previousInventory || {}).reduce(
+    previousInventory: Object.keys(farm.previousInventory).reduce(
       (items, item) => ({
         ...items,
-        [item]: safeDecimal(farm.previousInventory[item]),
+        [item]: new Decimal(farm.previousInventory[item]),
       }),
       {} as Record<InventoryItemName, Decimal>,
     ),
@@ -57,10 +27,10 @@ export function makeGame(rawFarm: any): GameState {
     previousWardrobe: farm.previousWardrobe,
     competitions: farm.competitions,
     verified: farm.verified,
-    stock: Object.keys(farm.stock || {}).reduce(
+    stock: Object.keys(farm.stock).reduce(
       (items, item) => ({
         ...items,
-        [item]: safeDecimal(farm.stock[item]),
+        [item]: new Decimal(farm.stock[item]),
       }),
       {} as Record<InventoryItemName, Decimal>,
     ),
@@ -83,8 +53,8 @@ export function makeGame(rawFarm: any): GameState {
     createdAt: farm.createdAt,
     stockExpiry: farm.stockExpiry || {},
     coins: farm.coins,
-    balance: safeDecimal(farm.balance),
-    previousBalance: safeDecimal(farm.previousBalance),
+    balance: new Decimal(farm.balance),
+    previousBalance: new Decimal(farm.previousBalance),
     username: farm.username,
     roninRewards: farm.roninRewards,
     settings: farm.settings,

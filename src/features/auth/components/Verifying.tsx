@@ -15,14 +15,53 @@ export const Verifying: React.FC = () => {
   const { t } = useAppTranslation();
 
   useEffect(() => {
-    authService.send("VERIFIED", {
-      data: {
-        account:
-          wallet.getConnection() || authState.context.user.token?.address,
-        token: authState.context.user.rawToken,
-      },
-    });
+    const setup = () => {
+      const eventMethod =
+        !!window.addEventListener === true ? "addEventListener" : "attachEvent";
+
+      const eventer = window[eventMethod as any] as unknown as (
+        name: any,
+        fn: (event: MessageEvent) => void,
+        propogate: boolean,
+      ) => void;
+      const messageEvent =
+        eventMethod == "attachEvent" ? "onmessage" : "message";
+
+      // Listen to message from child window
+      eventer(
+        messageEvent,
+        function (e: MessageEvent) {
+          const frame = document.getElementById("iframe") as HTMLIFrameElement;
+
+          // Only listen to events from the IFrame in focus
+          // Use strict origin comparison to prevent subdomain attacks
+          const apiOrigin = new URL(CONFIG.API_URL as string).origin;
+          if (e.origin === apiOrigin && e.source === frame?.contentWindow) {
+            authService.send("VERIFIED", {
+              data: {
+                account: wallet.getConnection(),
+                token: e.data,
+              },
+            });
+          }
+        },
+        false,
+      );
+    };
+
+    setup();
   }, []);
 
-  return <Loading />;
+  return (
+    <>
+      <iframe
+        hidden
+        src={`${CONFIG.API_URL}/auth/verify?token=${authState.context.user.rawToken}`}
+        title="Yeeeet!"
+        id="iframe"
+        style={{ height: 0 }}
+      ></iframe>
+      <Loading />
+    </>
+  );
 };
