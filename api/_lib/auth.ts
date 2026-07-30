@@ -23,8 +23,16 @@ export async function requireFarcasterUser(request: RequestLike) {
     throw error;
   }
 
-  return quickAuth.verifyJwt({
-    token: authorization.slice("Bearer ".length),
-    domain: appDomain(),
-  });
+  try {
+    return await quickAuth.verifyJwt({
+      token: authorization.slice("Bearer ".length),
+      domain: appDomain(),
+    });
+  } catch (err) {
+    const error = new Error(
+      err instanceof Error ? err.message : "Invalid or expired Farcaster token",
+    );
+    error.name = "UnauthorizedError";
+    throw error;
+  }
 }

@@ -79,8 +79,14 @@ export default async function handler(request: Request, response: Response) {
     const message = error instanceof Error ? error.message : "Unknown error";
     // eslint-disable-next-line no-console
     console.error("API /api/session error:", error);
-    const status =
-      error instanceof Error && error.name === "UnauthorizedError" ? 401 : 500;
+    const isAuthError =
+      error instanceof Error &&
+      (error.name === "UnauthorizedError" ||
+        message.toLowerCase().includes("token") ||
+        message.toLowerCase().includes("authorization") ||
+        message.toLowerCase().includes("farcaster") ||
+        message.toLowerCase().includes("jwt"));
+    const status = isAuthError ? 401 : 500;
     response.status(status).json({ error: message });
   }
 }
