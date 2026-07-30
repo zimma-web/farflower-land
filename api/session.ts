@@ -1,6 +1,6 @@
 import { requireFarcasterUser } from "./_lib/auth";
 import { getAdminDatabase } from "./_lib/supabase";
-import { OFFLINE_FARM } from "../src/features/game/lib/landData";
+import { DEFAULT_FARM_STATE } from "./_lib/defaultFarm";
 
 type Request = {
   method?: string;
@@ -14,9 +14,7 @@ type Response = {
 };
 
 function freshFarmState() {
-  // JSON is the persistence boundary. It also ensures a new player never
-  // shares Decimal/object references with another player's state.
-  return JSON.parse(JSON.stringify(OFFLINE_FARM));
+  return JSON.parse(JSON.stringify(DEFAULT_FARM_STATE));
 }
 
 export default async function handler(request: Request, response: Response) {
