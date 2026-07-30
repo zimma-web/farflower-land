@@ -112,8 +112,8 @@ const getAlchemyRpc = (chain: SupportedChain): string => {
 export const config = createConfig({
   chains:
     CONFIG.NETWORK === "mainnet"
-      ? [polygon, ronin, base]
-      : [polygonAmoy, saigon, baseSepolia],
+      ? [base, polygon, ronin]
+      : [baseSepolia, polygonAmoy, saigon],
   multiInjectedProviderDiscovery: true,
   connectors: [
     metaMaskConnector,
