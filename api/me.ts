@@ -38,3 +38,4 @@ module.exports = async function handler(request: any, response: any) {
       .json({ error: status === 401 ? message : "Unable to load player" });
   }
 };
+export {};

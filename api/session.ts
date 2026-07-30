@@ -80,3 +80,4 @@ module.exports = async function handler(request: any, response: any) {
     response.status(status).json({ error: message });
   }
 };
+export {};

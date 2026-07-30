@@ -18,3 +18,4 @@ function getAdminDatabase() {
 }
 
 module.exports = { getAdminDatabase };
+export {};

@@ -88,3 +88,4 @@ const DEFAULT_FARM_STATE = {
 };
 
 module.exports = { DEFAULT_FARM_STATE };
+export {};

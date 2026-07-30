@@ -35,3 +35,4 @@ async function requireFarcasterUser(request: any) {
 }
 
 module.exports = { requireFarcasterUser };
+export {};
