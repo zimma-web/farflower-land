@@ -25,10 +25,13 @@ export function safeDecimal(val: any): Decimal {
   }
 }
 
+import { OFFLINE_FARM } from "./landData";
+
 /**
  * Converts API response into a game state
  */
-export function makeGame(farm: any): GameState {
+export function makeGame(rawFarm: any): GameState {
+  const farm = { ...OFFLINE_FARM, ...rawFarm };
   return {
     inventory: Object.keys(farm.inventory || {}).reduce(
       (items, item) => ({
