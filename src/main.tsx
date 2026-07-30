@@ -1,4 +1,10 @@
 import React from "react";
+
+if (typeof (Number.prototype as any).toNumber !== "function") {
+  (Number.prototype as any).toNumber = function () {
+    return Number(this);
+  };
+}
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { CONFIG } from "lib/config";
