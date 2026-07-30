@@ -55,6 +55,7 @@
     "@coinbase/wallet-sdk": "^4.3.6",
     "@farcaster/miniapp-sdk": "^0.1.10",
     "@farcaster/miniapp-wagmi-connector": "^1.0.0",
+    "@farcaster/quick-auth": "^0.0.8",
     "@gemini-wallet/core": "~0.3.1",
     "@headlessui/react": "^2.2.4",
     "@khmyznikov/pwa-install": "^0.3.3",
