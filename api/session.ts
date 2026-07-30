@@ -79,10 +79,10 @@ export default async function handler(request: Request, response: Response) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
+    // eslint-disable-next-line no-console
+    console.error("API /api/session error:", error);
     const status =
       error instanceof Error && error.name === "UnauthorizedError" ? 401 : 500;
-    response
-      .status(status)
-      .json({ error: status === 401 ? message : "Unable to load farm" });
+    response.status(status).json({ error: message });
   }
 }

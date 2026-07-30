@@ -28,7 +28,7 @@ export async function loginRequest(request: Request) {
     const body = await response.json().catch(() => null);
     // eslint-disable-next-line no-console
     console.error("Farcaster Session API Error:", response.status, body);
-    throw new Error(body?.error || ERRORS.LOGIN_SERVER_ERROR);
+    throw new Error(body?.error || `Server Error (${response.status})`);
   }
 
   return { token };
