@@ -228,6 +228,16 @@ export const authMachine = createMachine(
         },
         always: [
           {
+            // Earlier Farflower experiments stored browser-created
+            // `farflower_sig` tokens. They are not server-verifiable and can
+            // point at an incomplete Supabase farm, which skips the login UI
+            // and leaves players on a blank world. Expire them deliberately;
+            // a player must authenticate through the Farcaster flow instead.
+            target: "welcome",
+            cond: () => (getToken() ?? "").endsWith(".farflower_sig"),
+            actions: "clearSession",
+          },
+          {
             // OAuth callbacks (e.g. googleCallback) redirect here with
             // ?error=<CODE> when login is refused. Surface that as the
             // unauthorised state so ErrorMessage renders the right screen.
