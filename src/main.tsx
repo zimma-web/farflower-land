@@ -2,7 +2,17 @@ import React from "react";
 
 if (typeof (Number.prototype as any).toNumber !== "function") {
   (Number.prototype as any).toNumber = function () {
-    return Number(this);
+    return Number(this) || 0;
+  };
+}
+if (typeof (String.prototype as any).toNumber !== "function") {
+  (String.prototype as any).toNumber = function () {
+    return Number(this) || 0;
+  };
+}
+if (typeof (Object.prototype as any).toNumber !== "function") {
+  (Object.prototype as any).toNumber = function () {
+    return Number(this.valueOf ? this.valueOf() : this) || 0;
   };
 }
 import { createRoot } from "react-dom/client";
