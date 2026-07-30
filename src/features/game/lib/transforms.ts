@@ -29,7 +29,7 @@ export function safeDecimal(val: any): Decimal {
   }
 }
 
-import { OFFLINE_FARM } from "./landData";
+
 
 /**
  * Converts API response into a game state
