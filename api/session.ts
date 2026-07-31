@@ -32,12 +32,16 @@ module.exports = async function handler(request: any, response: any) {
         .maybeSingle();
 
       if (!existingPlayer) {
-        const { data: newPlayer } = await database
+        const { data: newPlayer, error: insErr } = await database
           .from("players")
           .insert({ farcaster_fid: fid, last_seen_at: now })
           .select("id, farcaster_fid")
           .single();
 
+        if (insErr) {
+          // eslint-disable-next-line no-console
+          console.error("Player insert error in Supabase:", insErr);
+        }
         player = newPlayer;
       } else {
         await database
