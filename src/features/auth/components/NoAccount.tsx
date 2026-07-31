@@ -11,7 +11,6 @@ export const NoAccount: React.FC = () => {
   const handleCreateLand = async () => {
     setIsProcessing(true);
     try {
-      // Create farm state and enter land
       authService.send({
         type: "CREATE_FARM",
       } as any);
@@ -44,6 +43,18 @@ export const NoAccount: React.FC = () => {
       >
         {isProcessing ? "Memproses Pembuatan Land..." : "Bayar 1 USDC & Buat Land"}
       </Button>
+    </div>
+  );
+};
+
+export const ClaimAccount: React.FC<{
+  onClaim?: (id: number) => void;
+  onBack: () => void;
+}> = ({ onBack }) => {
+  return (
+    <div className="p-2 flex flex-col space-y-2 text-center">
+      <p className="text-sm">Silakan buat land baru untuk melanjutkan.</p>
+      <Button onClick={onBack}>Kembali</Button>
     </div>
   );
 };
