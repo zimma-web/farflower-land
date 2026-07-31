@@ -130,6 +130,14 @@ export async function autosaveRequest(
 let autosaveErrors = 0;
 
 export async function autosave(request: Request, retries = 0) {
+  if (request.state) {
+    try {
+      localStorage.setItem("farflower_farm_state", JSON.stringify(request.state));
+    } catch (_) {
+      // ignore
+    }
+  }
+
   if (!API_URL) return { verified: true };
 
   try {

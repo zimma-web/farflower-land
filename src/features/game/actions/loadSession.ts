@@ -134,9 +134,7 @@ export async function loadSession(
     }
 
     if (response.status >= 400) {
-      loadSessionErrors += 1;
-
-      throw new Error(ERRORS.SESSION_SERVER_ERROR);
+      return getFallbackSession();
     }
 
     loadSessionErrors = 0;
@@ -231,7 +229,7 @@ export async function loadSession(
       return await loadSession(request, retries + 1);
     }
 
-    throw e;
+    return getFallbackSession();
   }
 }
 
