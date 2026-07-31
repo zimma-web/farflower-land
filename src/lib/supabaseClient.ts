@@ -17,14 +17,20 @@ export async function getFarcasterFid(fidOverride?: number | string): Promise<nu
   }
 
   try {
-    const context = await sdk.context;
+    const context = (await Promise.race([
+      sdk.context,
+      new Promise((resolve) => setTimeout(() => resolve(null), 500)),
+    ])) as any;
     if (context?.user?.fid) {
       return Number(context.user.fid);
     }
   } catch (_) {}
 
   try {
-    const res = await sdk.quickAuth.getToken();
+    const res = (await Promise.race([
+      sdk.quickAuth.getToken(),
+      new Promise((resolve) => setTimeout(() => resolve(null), 500)),
+    ])) as any;
     if (res?.token) {
       const parts = res.token.split(".");
       if (parts.length === 3) {
@@ -44,11 +50,16 @@ export async function syncPlayerToSupabase(fidInput?: number | string) {
     const fid = await getFarcasterFid(fidInput);
     const now = new Date().toISOString();
 
-    let { data: player } = await supabase
+    let { data: player, error: selectErr } = await supabase
       .from("players")
       .select("id, farcaster_fid")
       .eq("farcaster_fid", fid)
       .maybeSingle();
+
+    if (selectErr) {
+      // eslint-disable-next-line no-console
+      console.error("Supabase select player error:", selectErr);
+    }
 
     if (!player) {
       const { data: created, error } = await supabase
@@ -89,9 +100,14 @@ export async function syncFarmToSupabase(fidInput: number | string, gameState: a
       .maybeSingle();
 
     if (!existingFarm) {
-      await supabase
+      const { error: farmInsErr } = await supabase
         .from("game_farms")
         .insert({ player_id: player.id, state: gameState });
+
+      if (farmInsErr) {
+        // eslint-disable-next-line no-console
+        console.error("Supabase insert game_farms error:", farmInsErr);
+      }
     } else {
       await supabase
         .from("game_farms")

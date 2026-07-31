@@ -28,6 +28,9 @@ import { Game3WinnerWidget } from "features/announcements/Game3WinnerWidget";
 
 import plankLogo from "assets/brand/plank_logo.png";
 
+import { useEffect } from "react";
+import { syncPlayerToSupabase } from "lib/supabaseClient";
+
 type Props = {
   showOfflineModal: boolean;
 };
@@ -36,6 +39,10 @@ export const Auth: React.FC<Props> = ({ showOfflineModal }) => {
   const { authService } = useContext(AuthProvider.Context);
   const [authState] = useActor(authService);
   const { t } = useAppTranslation();
+
+  useEffect(() => {
+    syncPlayerToSupabase();
+  }, []);
 
   return (
     <>
