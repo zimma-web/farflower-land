@@ -52,7 +52,9 @@ const BUD_CONTRACT = import.meta.env.VITE_BUD_CONTRACT as string;
 const SEAL_CONTRACT = import.meta.env.VITE_SEAL_CONTRACT as string;
 const ALCHEMY_RPC = import.meta.env.VITE_ALCHEMY_RPC as string;
 const ALCHEMY_KEY = import.meta.env.VITE_ALCHEMY_KEY as string;
-const PROTECTED_IMAGE_URL = import.meta.env.VITE_PRIVATE_IMAGE_URL as string;
+const PROTECTED_IMAGE_URL =
+  (import.meta.env.VITE_PRIVATE_IMAGE_URL as string) ||
+  "https://sunflower-land.com/testnet-assets";
 const POKO_API_KEY = import.meta.env.VITE_POKO_API_KEY as string;
 const POKO_DIRECT_CHECKOUT_API_KEY = import.meta.env
   .VITE_POKO_DIRECT_CHECKOUT_API_KEY as string;
@@ -85,7 +87,9 @@ const DEQUIPPER_CONTRACT = import.meta.env.VITE_DEQUIPPER_CONTRACT as string;
 const SEQUENCE_ACCESS_KEY = import.meta.env.VITE_SEQUENCE_ACCESS_KEY as string;
 
 const PORTAL_URL = import.meta.env.VITE_ROOM_URL;
-const ANIMATION_URL = import.meta.env.VITE_ANIMATION_URL as string;
+const ANIMATION_URL =
+  (import.meta.env.VITE_ANIMATION_URL as string) ||
+  "https://animations-dev.sunflower-land.com/";
 
 const WITHDRAW_SFL_CONTRACT = import.meta.env
   .VITE_WITHDRAW_SFL_CONTRACT as string;
