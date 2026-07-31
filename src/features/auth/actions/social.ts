@@ -3,7 +3,7 @@ import { decodeToken } from "./login";
 
 const host = window.location.host.replace(/^www\./, "");
 const LOCAL_STORAGE_KEY = `sb_wiz.zpc.ng.${host}-${window.location.pathname}`;
-const TOKEN_BUFFER_MS = 1000 * 60 * 60 * 4;
+const TOKEN_BUFFER_MS = 1000 * 60 * 5;
 
 export const getToken = () => {
   const token =

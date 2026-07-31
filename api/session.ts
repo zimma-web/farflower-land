@@ -25,16 +25,39 @@ module.exports = async function handler(request: any, response: any) {
     const now = new Date().toISOString();
 
     const fid = Number(identity.sub);
-    const { data: player, error: playerError } = await database
+    let { data: player } = await database
       .from("players")
-      .upsert(
-        { farcaster_fid: fid, last_seen_at: now },
-        { onConflict: "farcaster_fid" },
-      )
       .select("id, farcaster_fid")
-      .single();
-    if (playerError || !player)
-      throw playerError ?? new Error("Player missing");
+      .eq("farcaster_fid", fid)
+      .maybeSingle();
+
+    if (!player) {
+      const inserted = await database
+        .from("players")
+        .insert({ farcaster_fid: fid, last_seen_at: now })
+        .select("id, farcaster_fid")
+        .single();
+
+      if (inserted.error || !inserted.data) {
+        const reFetch = await database
+          .from("players")
+          .select("id, farcaster_fid")
+          .eq("farcaster_fid", fid)
+          .single();
+
+        if (reFetch.error || !reFetch.data) {
+          throw inserted.error ?? reFetch.error ?? new Error("Player creation failed");
+        }
+        player = reFetch.data;
+      } else {
+        player = inserted.data;
+      }
+    } else {
+      await database
+        .from("players")
+        .update({ last_seen_at: now })
+        .eq("id", player.id);
+    }
 
     let { data: farm } = await database
       .from("game_farms")
