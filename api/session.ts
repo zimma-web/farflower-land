@@ -16,6 +16,11 @@ module.exports = async function handler(request: any, response: any) {
 
   try {
     const identity = await requireFarcasterUser(request);
+    if (!identity || identity.sub == null) {
+      const error = new Error("Invalid Farcaster identity payload");
+      error.name = "UnauthorizedError";
+      throw error;
+    }
     const database = getAdminDatabase();
     const now = new Date().toISOString();
 

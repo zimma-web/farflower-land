@@ -4,10 +4,13 @@ const { createClient } = require("@farcaster/quick-auth");
 const quickAuth = createClient();
 
 function appDomain() {
-  const origin = process.env.APP_ORIGIN;
-  if (!origin) throw new Error("APP_ORIGIN is not configured");
-
-  return new URL(origin).host;
+  const origin = process.env.APP_ORIGIN || "https://farflower-land.vercel.app";
+  try {
+    const formatted = origin.startsWith("http") ? origin : `https://${origin}`;
+    return new URL(formatted).host;
+  } catch (e) {
+    return "farflower-land.vercel.app";
+  }
 }
 
 async function requireFarcasterUser(request: any) {
