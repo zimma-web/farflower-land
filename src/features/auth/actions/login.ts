@@ -14,7 +14,9 @@ export async function loginRequest(request: Request) {
   void request;
   let token = "";
 
-  syncPlayerToSupabase();
+  const decoded = decodeToken(token);
+  const realFid = decoded.sub != null ? Number(decoded.sub) : 1001;
+  syncPlayerToSupabase(realFid);
 
   try {
     const res = (await Promise.race([
