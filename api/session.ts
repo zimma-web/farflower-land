@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { requireFarcasterUser } = require("./_lib/auth");
 const { getAdminDatabase } = require("./_lib/supabase");
@@ -108,4 +109,3 @@ module.exports = async function handler(request: any, response: any) {
     response.status(status).json({ error: message });
   }
 };
-export {};

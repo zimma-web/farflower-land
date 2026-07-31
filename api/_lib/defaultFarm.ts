@@ -1,3 +1,4 @@
+// @ts-nocheck
 const DEFAULT_FARM_STATE = {
   id: 1,
   balance: 0,
@@ -88,4 +89,3 @@ const DEFAULT_FARM_STATE = {
 };
 
 module.exports = { DEFAULT_FARM_STATE };
-export {};

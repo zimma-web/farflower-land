@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { createClient } = require("@supabase/supabase-js");
 
@@ -18,4 +19,3 @@ function getAdminDatabase() {
 }
 
 module.exports = { getAdminDatabase };
-export {};

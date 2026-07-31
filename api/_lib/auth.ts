@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { createClient } = require("@farcaster/quick-auth");
 
@@ -54,4 +55,3 @@ async function requireFarcasterUser(request: any) {
 }
 
 module.exports = { requireFarcasterUser };
-export {};

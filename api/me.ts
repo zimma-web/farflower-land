@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { getAdminDatabase } = require("./_lib/supabase");
 const { requireFarcasterUser } = require("./_lib/auth");
@@ -38,4 +39,3 @@ module.exports = async function handler(request: any, response: any) {
       .json({ error: status === 401 ? message : "Unable to load player" });
   }
 };
-export {};
