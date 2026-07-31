@@ -306,13 +306,12 @@ export const authMachine = createMachine(
           src: "login",
           onDone: [
             {
-              target: "verifying",
-              actions: ["assignToken"],
+              target: "authorised",
+              actions: ["assignWeb2Token", "saveToken"],
             },
           ],
           onError: {
-            target: "unauthorised",
-            actions: "assignErrorMessage",
+            target: "noAccount",
           },
         },
       },
@@ -373,7 +372,7 @@ export const authMachine = createMachine(
       noAccount: {
         on: {
           CREATE_FARM: {
-            target: "creating",
+            target: "connected",
           },
           CLAIM: {
             target: "claiming",
