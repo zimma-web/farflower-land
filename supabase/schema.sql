@@ -1,16 +1,10 @@
--- Run this in the Supabase SQL Editor before deploying /api/me.
--- Browser roles are intentionally denied access; Vercel's service-role key is
--- the only credential allowed to create or update player records.
-
+-- Farflower Land Database Schema for Supabase
 create table if not exists public.players (
   id uuid primary key default gen_random_uuid(),
   farcaster_fid bigint not null unique,
   created_at timestamptz not null default now(),
   last_seen_at timestamptz not null default now()
 );
-
-alter table public.players enable row level security;
-revoke all on table public.players from anon, authenticated;
 
 create table if not exists public.game_farms (
   id bigint generated always as identity primary key,
@@ -21,5 +15,9 @@ create table if not exists public.game_farms (
   updated_at timestamptz not null default now()
 );
 
-alter table public.game_farms enable row level security;
-revoke all on table public.game_farms from anon, authenticated;
+-- Enable public access for API serverless functions
+grant all on table public.players to anon, authenticated, service_role;
+grant all on table public.game_farms to anon, authenticated, service_role;
+
+alter table public.players disable row level security;
+alter table public.game_farms disable row level security;

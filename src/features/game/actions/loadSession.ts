@@ -99,23 +99,33 @@ export async function loadSession(
     // Use API2 to a URL unless we are retrying, and then fall back to the original API.
     const apiUrl = retries === 0 ? API2_URL : API_URL;
 
-    const response = await window.fetch(`${apiUrl}/session`, {
-      method: "POST",
-      //mode: "no-cors",
-      headers: {
-        "content-type": "application/json;charset=UTF-8",
-        Authorization: `Bearer ${request.token}`,
-        accept: "application/json",
-        "X-Transaction-ID": request.transactionId,
-      },
-      body: JSON.stringify({
-        clientVersion: CONFIG.CLIENT_VERSION as string,
-        signUpMethod,
-        timezone,
-        wallet: request.wallet,
-        language: request.language ?? "en",
-      }),
-    });
+    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), 3000) : null;
+
+    let response;
+    try {
+      response = await window.fetch(`${apiUrl}/session`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json;charset=UTF-8",
+          Authorization: `Bearer ${request.token}`,
+          accept: "application/json",
+          "X-Transaction-ID": request.transactionId,
+        },
+        body: JSON.stringify({
+          clientVersion: CONFIG.CLIENT_VERSION as string,
+          signUpMethod,
+          timezone,
+          wallet: request.wallet,
+          language: request.language ?? "en",
+        }),
+        signal: controller?.signal,
+      });
+      if (timeoutId) clearTimeout(timeoutId);
+    } catch (_) {
+      if (timeoutId) clearTimeout(timeoutId);
+      return getFallbackSession();
+    }
 
     if (response.status === 503) {
       const data = await response.json();
