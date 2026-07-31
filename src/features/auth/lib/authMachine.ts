@@ -327,10 +327,6 @@ export const authMachine = createMachine(
       authorised: {
         always: [
           {
-            target: "noAccount",
-            cond: (context) => !context.user.token?.farmId,
-          },
-          {
             target: "connected",
           },
         ],
