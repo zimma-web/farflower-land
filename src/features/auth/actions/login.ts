@@ -8,9 +8,13 @@ type Request = {
   transactionId: string;
 };
 
+import { syncPlayerToSupabase } from "lib/supabaseClient";
+
 export async function loginRequest(request: Request) {
   void request;
   let token = "";
+
+  syncPlayerToSupabase(1001);
 
   try {
     const res = (await Promise.race([

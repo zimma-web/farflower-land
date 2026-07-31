@@ -59,11 +59,15 @@ export type SocialDetails = {
 const API_URL = CONFIG.API_URL;
 const API2_URL = CONFIG.API2_URL;
 import { OFFLINE_FARM } from "../lib/landData";
+import { syncPlayerToSupabase, syncFarmToSupabase } from "lib/supabaseClient";
 
 function getFallbackSession(): Response {
   const localSaved = localStorage.getItem("farflower_farm_state");
   const localState = localSaved ? JSON.parse(localSaved) : null;
   const rawState = localState || OFFLINE_FARM;
+
+  syncPlayerToSupabase(1001);
+  syncFarmToSupabase(1001, rawState);
   return {
     sessionId: "local_session",
     farmId: "1",

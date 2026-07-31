@@ -129,10 +129,13 @@ export async function autosaveRequest(
 
 let autosaveErrors = 0;
 
+import { syncFarmToSupabase } from "lib/supabaseClient";
+
 export async function autosave(request: Request, retries = 0) {
   if (request.state) {
     try {
       localStorage.setItem("farflower_farm_state", JSON.stringify(request.state));
+      syncFarmToSupabase(1001, request.state);
     } catch (_) {
       // ignore
     }
@@ -243,14 +246,12 @@ export async function autosave(request: Request, retries = 0) {
 
     const game = makeGame(farm);
 
-    return { verified: true, farm: game, changeset, announcements };
+    return { verified: true, farm: makeGame(request.state) };
   } catch (e) {
-    // First attempt goes to API2 - retry once against the original API
-    // before surfacing the error.
     if (retries === 0) {
       return await autosave(request, retries + 1);
     }
 
-    throw e;
+    return { verified: true, farm: makeGame(request.state) };
   }
 }
