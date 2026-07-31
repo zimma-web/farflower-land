@@ -41,7 +41,6 @@ const getValidBuildings = (state: GameState): BuildingName[] => {
     "Kitchen",
     "Water Well",
     "Bakery",
-    "Hen House",
     "Deli",
     "Smoothie Shack",
     "Toolshed",
@@ -49,12 +48,9 @@ const getValidBuildings = (state: GameState): BuildingName[] => {
     "Compost Bin",
     "Turbo Composter",
     "Premium Composter",
-    "Greenhouse",
     "Crop Machine",
     "Crafting Box",
-    "Barn",
     "Fish Market",
-    "Pet House",
     "Aging Shed",
   ];
 

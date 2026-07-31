@@ -135,7 +135,18 @@ export async function autosave(request: Request, retries = 0) {
   if (request.state) {
     try {
       localStorage.setItem("farflower_farm_state", JSON.stringify(request.state));
-      syncFarmToSupabase(1001, request.state);
+      let realFid = 1001;
+      try {
+        const rawToken = localStorage.getItem("sb_wiz.zpc.v." + window.location.host) || "";
+        if (rawToken) {
+          const parts = rawToken.split(".");
+          if (parts.length === 3) {
+            const decoded = JSON.parse(atob(parts[1]));
+            if (decoded.sub != null) realFid = Number(decoded.sub);
+          }
+        }
+      } catch (_) {}
+      syncFarmToSupabase(realFid, request.state);
     } catch (_) {
       // ignore
     }

@@ -57,6 +57,9 @@ export const NoAccount: React.FC = () => {
         <div className="flex items-center space-x-1">
           <span className="text-base font-bold text-green-700">1.00 USDC</span>
         </div>
+        <span className="text-[10px] text-brown-600 truncate max-w-full">
+          Penerima: 0xe251...90e3
+        </span>
       </div>
 
       {errorMsg && <p className="text-xs text-red-600">{errorMsg}</p>}

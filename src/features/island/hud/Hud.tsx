@@ -111,9 +111,9 @@ const HudComponent: React.FC<{
           },
         )}
       >
-        <WorldFeedButton showFeed={showFeed} setShowFeed={setShowFeed} />
+        {WorldFeedButton && <WorldFeedButton showFeed={showFeed} setShowFeed={setShowFeed} />}
         {hasPowerSkills && <PowerSkillsButton />}
-        <MarketplaceButton />
+        {/* <MarketplaceButton /> */}
         {location === "interior" && <InteriorFloorNav floor="ground" />}
         {location === "level_one" && <InteriorFloorNav floor="level_one" />}
         <TravelButton location={location} />
@@ -138,10 +138,10 @@ const HudComponent: React.FC<{
         {(location === "interior" || location === "level_one") && (
           <ImportHomeWidget />
         )}
-        <RaffleWidget />
+        {/* <RaffleWidget /> */}
         <TransactionCountdown />
         <StreamCountdown />
-        <AuctionCountdown />
+        {/* <AuctionCountdown /> */}
         <VIPExpiryWidget />
         <VersionUpdateWidget />
       </div>

@@ -66,8 +66,22 @@ function getFallbackSession(): Response {
   const localState = localSaved ? JSON.parse(localSaved) : null;
   const rawState = localState || OFFLINE_FARM;
 
-  syncPlayerToSupabase(1001);
-  syncFarmToSupabase(1001, rawState);
+  let realFid = 1001;
+  try {
+    const rawToken = localStorage.getItem("sb_wiz.zpc.v." + window.location.host) || "";
+    if (rawToken) {
+      const parts = rawToken.split(".");
+      if (parts.length === 3) {
+        const decoded = JSON.parse(atob(parts[1]));
+        if (decoded.sub != null) realFid = Number(decoded.sub);
+      }
+    }
+  } catch (_) {
+    // ignore
+  }
+
+  syncPlayerToSupabase(realFid);
+  syncFarmToSupabase(realFid, rawState);
   return {
     sessionId: "local_session",
     farmId: "1",
