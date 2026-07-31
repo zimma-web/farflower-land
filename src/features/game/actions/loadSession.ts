@@ -58,6 +58,28 @@ export type SocialDetails = {
 
 const API_URL = CONFIG.API_URL;
 const API2_URL = CONFIG.API2_URL;
+import { OFFLINE_FARM } from "../lib/landData";
+
+function getFallbackSession(): Response {
+  const localSaved = localStorage.getItem("farflower_farm_state");
+  const localState = localSaved ? JSON.parse(localSaved) : null;
+  const rawState = localState || OFFLINE_FARM;
+  return {
+    sessionId: "local_session",
+    farmId: "1",
+    game: makeGame(rawState),
+    deviceTrackerId: "local_device",
+    announcements: {},
+    verified: true,
+    moderation: { muted: [], kicked: [] },
+    analyticsId: "local_analytics",
+    purchases: [],
+    oauthNonce: "",
+    prices: { sfl: { usd: 0, timestamp: Date.now() } },
+    apiKey: "",
+    totalHelpedToday: 0,
+  };
+}
 
 let loadSessionErrors = 0;
 
