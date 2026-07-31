@@ -4,11 +4,7 @@ import { Context } from "../lib/Provider";
 
 import walletIcon from "assets/icons/wallet.png";
 import tradeIcon from "assets/icons/trade.png";
-import sackIcon from "assets/icons/sack.png";
-import islandIcon from "assets/icons/island.png";
-import fishIcon from "assets/icons/fish_dot.png";
-import drillIcon from "assets/icons/drill.png";
-import bumpkinIcon from "assets/icons/bumpkin_emblem.webp";
+import { SUNNYSIDE } from "assets/sunnyside";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 
 export const Welcome: React.FC = () => {
@@ -25,19 +21,19 @@ export const Welcome: React.FC = () => {
         }}
       >
         <div className="flex items-center">
-          <img src={sackIcon} className="h-4 mr-1" />
+          <img src={SUNNYSIDE.icons.plant} className="h-4 mr-1" />
           <p className="text-xs">{t("welcome.action.grow")}</p>
         </div>
         <div className="flex items-center">
-          <img src={islandIcon} className="h-4 mr-1" />
+          <img src={SUNNYSIDE.tools.hammer} className="h-4 mr-1" />
           <p className="text-xs">{t("welcome.action.build")}</p>
         </div>
         <div className="flex items-center">
-          <img src={fishIcon} className="h-4 mr-1" />
+          <img src={SUNNYSIDE.icons.fish} className="h-4 mr-1" />
           <p className="text-xs">{t("welcome.action.fish")}</p>
         </div>
         <div className="flex items-center">
-          <img src={drillIcon} className="h-4 mr-1" />
+          <img src={SUNNYSIDE.tools.iron_pickaxe} className="h-4 mr-1" />
           <p className="text-xs">{t("welcome.action.mine")}</p>
         </div>
 
@@ -65,7 +61,7 @@ export const Welcome: React.FC = () => {
       >
         <div className="px-8">
           <img
-            src={bumpkinIcon}
+            src={SUNNYSIDE.icons.player}
             className="h-7 mobile:h-6 ml-2.5 mr-6 absolute left-0 top-1"
           />
           {t("welcome.createAccount")}
