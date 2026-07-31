@@ -25,7 +25,7 @@ export const NoAccount: React.FC = () => {
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.error || "Gagal membuat land di server");
+        throw new Error(data?.error || "Failed to create farm land on server");
       }
 
       // Transition machine to connected
@@ -45,20 +45,20 @@ export const NoAccount: React.FC = () => {
   return (
     <div className="p-2 flex flex-col space-y-3 items-center text-center">
       <Label type="chill" icon={SUNNYSIDE.icons.heart} className="mb-1">
-        Buat Land Baru Farflower
+        Create New Farflower Land
       </Label>
       
       <p className="text-sm px-2 text-brown-900">
-        Akun Farcaster kamu telah terdaftar di database! Untuk mengaktifkan akun dan mulai menanam, dapatkan land pertanian kamu.
+        Your Farcaster account is registered! Activate your farm land to start planting, harvesting, and building.
       </p>
 
       <div className="w-full bg-brown-200 p-2 rounded-md flex flex-col items-center space-y-1">
-        <span className="text-xs font-bold text-brown-800">Harga Aktivasi Land:</span>
+        <span className="text-xs font-bold text-brown-800">Land Activation Fee:</span>
         <div className="flex items-center space-x-1">
           <span className="text-base font-bold text-green-700">1.00 USDC</span>
         </div>
         <span className="text-[10px] text-brown-600 truncate max-w-full">
-          Penerima: 0xe251...90e3
+          Recipient: 0xe251...90e3
         </span>
       </div>
 
@@ -69,7 +69,7 @@ export const NoAccount: React.FC = () => {
         onClick={handleCreateLand}
         className="w-full mt-2"
       >
-        {isProcessing ? "Memproses Pembuatan Land..." : "Bayar 1 USDC & Aktifkan Land"}
+        {isProcessing ? "Processing Land Activation..." : "Pay 1 USDC & Activate Land"}
       </Button>
     </div>
   );
@@ -81,8 +81,8 @@ export const ClaimAccount: React.FC<{
 }> = ({ onBack }) => {
   return (
     <div className="p-2 flex flex-col space-y-2 text-center">
-      <p className="text-sm">Silakan buat land baru untuk melanjutkan.</p>
-      <Button onClick={onBack}>Kembali</Button>
+      <p className="text-sm">Please create a new land to continue.</p>
+      <Button onClick={onBack}>Back</Button>
     </div>
   );
 };
