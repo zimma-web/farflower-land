@@ -1,6 +1,7 @@
 import jwt_decode from "jwt-decode";
 import { sdk } from "@farcaster/miniapp-sdk";
 import { wallet } from "lib/blockchain/wallet";
+import { syncPlayerToSupabase } from "lib/supabaseClient";
 
 type Request = {
   address: string;
@@ -8,15 +9,9 @@ type Request = {
   transactionId: string;
 };
 
-import { syncPlayerToSupabase } from "lib/supabaseClient";
-
 export async function loginRequest(request: Request) {
   void request;
   let token = "";
-
-  const decoded = decodeToken(token);
-  const realFid = decoded.sub != null ? Number(decoded.sub) : 1001;
-  syncPlayerToSupabase(realFid);
 
   try {
     const res = (await Promise.race([
@@ -28,6 +23,16 @@ export async function loginRequest(request: Request) {
     token = res?.token || "";
   } catch (_) {
     token = "farcaster_dev_token";
+  }
+
+  // Decode token after obtaining it and sync player to Supabase
+  try {
+    const decoded = decodeToken(token);
+    const realFid = decoded.sub != null ? Number(decoded.sub) : 1001;
+    await syncPlayerToSupabase(realFid);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("Error syncing player in loginRequest:", err);
   }
 
   const controller = typeof AbortController !== "undefined" ? new AbortController() : null;

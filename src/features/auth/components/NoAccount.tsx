@@ -1,23 +1,48 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../lib/Provider";
 import { Button } from "components/ui/Button";
 import { Label } from "components/ui/Label";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { getToken } from "../actions/social";
-import { syncFarmToSupabase } from "lib/supabaseClient";
+import { syncPlayerToSupabase, syncFarmToSupabase } from "lib/supabaseClient";
 import { OFFLINE_FARM } from "features/game/lib/landData";
+import { decodeToken } from "../actions/login";
 
 export const NoAccount: React.FC = () => {
   const { authService } = useContext(Context);
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  useEffect(() => {
+    try {
+      const token = getToken();
+      if (token) {
+        const decoded = decodeToken(token);
+        const realFid = decoded.sub != null ? Number(decoded.sub) : 1001;
+        syncPlayerToSupabase(realFid);
+      } else {
+        syncPlayerToSupabase(1001);
+      }
+    } catch (_) {
+      syncPlayerToSupabase(1001);
+    }
+  }, []);
+
   const handleCreateLand = async () => {
     setIsProcessing(true);
     setErrorMsg(null);
     try {
+      let realFid = 1001;
+      try {
+        const token = getToken();
+        if (token) {
+          const decoded = decodeToken(token);
+          if (decoded.sub != null) realFid = Number(decoded.sub);
+        }
+      } catch (_) {}
+
       // Sync player and farm directly into Supabase database
-      syncFarmToSupabase(1001, OFFLINE_FARM);
+      syncFarmToSupabase(realFid, OFFLINE_FARM);
 
       const token = getToken();
       await window.fetch("/api/create-farm", {
