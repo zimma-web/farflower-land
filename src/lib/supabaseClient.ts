@@ -1,12 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL =
-  process.env.VITE_SUPABASE_URL ||
-  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  (import.meta?.env?.VITE_SUPABASE_URL as string) ||
   "https://arknbagrkoeslhudyien.supabase.co";
 
 const SUPABASE_ANON_KEY =
-  process.env.VITE_SUPABASE_ANON_KEY ||
+  (import.meta?.env?.VITE_SUPABASE_ANON_KEY as string) ||
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFya25iYWdya29lc2xodWR5aWVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMzg2OTAsImV4cCI6MjEwMDkxNDY5MH0.ljVy0lU843HdJCGgCqP1pF9oNkpkbIV9K5Hkto5oye8";
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

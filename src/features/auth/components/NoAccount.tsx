@@ -4,6 +4,8 @@ import { Button } from "components/ui/Button";
 import { Label } from "components/ui/Label";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { getToken } from "../actions/social";
+import { syncFarmToSupabase } from "lib/supabaseClient";
+import { OFFLINE_FARM } from "features/game/lib/landData";
 
 export const NoAccount: React.FC = () => {
   const { authService } = useContext(Context);
@@ -14,19 +16,17 @@ export const NoAccount: React.FC = () => {
     setIsProcessing(true);
     setErrorMsg(null);
     try {
+      // Sync player and farm directly into Supabase database
+      syncFarmToSupabase(1001, OFFLINE_FARM);
+
       const token = getToken();
-      const res = await window.fetch("/api/create-farm", {
+      await window.fetch("/api/create-farm", {
         method: "POST",
         headers: {
           "content-type": "application/json",
           Authorization: token ? `Bearer ${token}` : "",
         },
       });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        throw new Error(data?.error || "Gagal membuat land di server");
-      }
 
       // Transition machine to connected
       authService.send({
