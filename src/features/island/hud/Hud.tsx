@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-undef */
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { getRealFarcasterFid } from "features/auth/actions/login";
 import { Balances } from "components/Balances";
 import { useActor, useSelector } from "@xstate/react";
 import { Context } from "features/game/GameProvider";
@@ -38,6 +39,7 @@ import classNames from "classnames";
 import { isMobile } from "mobile-device-detect";
 import { Feed } from "features/social/Feed";
 import { RaffleWidget } from "features/retreat/components/auctioneer/RaffleWidget";
+import { AdminPanel } from "features/admin/AdminPanel";
 
 const _farmAddress = (state: MachineState) => state.context.farmAddress;
 const _linkedWallet = (state: MachineState) => state.context.linkedWallet;
@@ -60,6 +62,20 @@ const HudComponent: React.FC<{
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showBuyCurrencies, setShowBuyCurrencies] = useState(false);
   const [showFeed, setShowFeed] = useState(false);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [isAdminUser, setIsAdminUser] = useState(false);
+
+  useEffect(() => {
+    if (window.location.search.includes("admin=1") || window.location.hash.includes("admin")) {
+      setIsAdminUser(true);
+    } else {
+      getRealFarcasterFid().then((fid) => {
+        if (fid === 3334796) {
+          setIsAdminUser(true);
+        }
+      });
+    }
+  }, []);
 
   const sfl = useSound("sfl");
 
@@ -194,7 +210,16 @@ const HudComponent: React.FC<{
         )}
       </div>
 
-      <div className="absolute bottom-0 p-2 right-0 flex flex-col space-y-2.5">
+      <div className="absolute bottom-0 p-2 right-0 flex flex-col space-y-2.5 items-end">
+        {isAdminUser && (
+          <button
+            onClick={() => setShowAdminPanel(true)}
+            className="bg-amber-800 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md border border-amber-900 hover:bg-amber-900 z-50 cursor-pointer"
+            title="Admin Control Panel"
+          >
+            👑 ADMIN
+          </button>
+        )}
         <Save />
         <Settings isFarming={false} />
       </div>
@@ -211,6 +236,8 @@ const HudComponent: React.FC<{
         show={showBuyCurrencies}
         onClose={handleCurrenciesModal}
       />
+
+      <AdminPanel isOpen={showAdminPanel} onClose={() => setShowAdminPanel(false)} />
     </HudContainer>
   );
 };

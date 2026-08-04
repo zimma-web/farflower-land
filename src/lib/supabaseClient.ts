@@ -10,22 +10,27 @@ const SUPABASE_ANON_KEY =
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-export async function syncPlayerToSupabase(fidInput?: number | string) {
+export async function syncPlayerToSupabase(
+  fidInput?: number | string,
+  extraData: { has_land?: boolean; land_activated_at?: string } = {},
+) {
   try {
     const fid = Number(fidInput || 1001);
     const now = new Date().toISOString();
 
     let { data: player } = await supabase
       .from("players")
-      .select("id, farcaster_fid")
+      .select("id, farcaster_fid, has_land")
       .eq("farcaster_fid", fid)
       .maybeSingle();
+
+    const payload: any = { last_seen_at: now, ...extraData };
 
     if (!player) {
       const { data: created, error } = await supabase
         .from("players")
-        .insert({ farcaster_fid: fid, last_seen_at: now })
-        .select("id, farcaster_fid")
+        .insert({ farcaster_fid: fid, has_land: false, ...payload })
+        .select("id, farcaster_fid, has_land")
         .single();
 
       if (error) {
@@ -36,7 +41,7 @@ export async function syncPlayerToSupabase(fidInput?: number | string) {
     } else {
       await supabase
         .from("players")
-        .update({ last_seen_at: now })
+        .update(payload)
         .eq("id", player.id);
     }
 
@@ -72,5 +77,97 @@ export async function syncFarmToSupabase(fidInput: number | string, gameState: a
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error("syncFarmToSupabase error:", err);
+  }
+}
+
+/* =========================================================================
+   ADMIN PANEL API FUNCTIONS (Full Database Control)
+   ========================================================================= */
+
+export async function fetchAllPlayersFromSupabase() {
+  try {
+    const { data, error } = await supabase
+      .from("players")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("fetchAllPlayersFromSupabase error:", err);
+    return [];
+  }
+}
+
+export async function updatePlayerLandStatusInSupabase(playerId: string, hasLand: boolean) {
+  try {
+    const now = new Date().toISOString();
+    const { error } = await supabase
+      .from("players")
+      .update({
+        has_land: hasLand,
+        land_activated_at: hasLand ? now : null,
+      })
+      .eq("id", playerId);
+
+    if (error) throw error;
+    return true;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("updatePlayerLandStatusInSupabase error:", err);
+    return false;
+  }
+}
+
+export async function deletePlayerFromSupabase(playerId: string) {
+  try {
+    const { error } = await supabase
+      .from("players")
+      .delete()
+      .eq("id", playerId);
+
+    if (error) throw error;
+    return true;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("deletePlayerFromSupabase error:", err);
+    return false;
+  }
+}
+
+export async function fetchFarmStateFromSupabase(playerId: string) {
+  try {
+    const { data, error } = await supabase
+      .from("game_farms")
+      .select("*")
+      .eq("player_id", playerId)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("fetchFarmStateFromSupabase error:", err);
+    return null;
+  }
+}
+
+export async function updateFarmStateInSupabase(playerId: string, gameState: any) {
+  try {
+    const { error } = await supabase
+      .from("game_farms")
+      .update({
+        state: gameState,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("player_id", playerId);
+
+    if (error) throw error;
+    return true;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("updateFarmStateInSupabase error:", err);
+    return false;
   }
 }
