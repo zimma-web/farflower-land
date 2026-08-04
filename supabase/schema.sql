@@ -1,23 +1,26 @@
--- Farflower Land Database Schema for Supabase
-create table if not exists public.players (
-  id uuid primary key default gen_random_uuid(),
-  farcaster_fid bigint not null unique,
-  created_at timestamptz not null default now(),
-  last_seen_at timestamptz not null default now()
-);
+-- Run this script in your Supabase Dashboard -> SQL Editor
+-- This resolves the "42501: new row violates row-level security policy" error.
 
-create table if not exists public.game_farms (
-  id bigint generated always as identity primary key,
-  player_id uuid not null unique references public.players(id) on delete cascade,
-  state jsonb not null,
-  revision integer not null default 1,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
+-- Option 1: Disable Row Level Security (Recommended for simple open setup)
+alter table public.players disable row level security;
+alter table public.game_farms disable row level security;
 
--- Enable public access for API serverless functions
 grant all on table public.players to anon, authenticated, service_role;
 grant all on table public.game_farms to anon, authenticated, service_role;
 
-alter table public.players disable row level security;
-alter table public.game_farms disable row level security;
+-- Option 2: Add permissive RLS Policies (if RLS is kept enabled)
+drop policy if exists "Allow public insert on players" on public.players;
+drop policy if exists "Allow public select on players" on public.players;
+drop policy if exists "Allow public update on players" on public.players;
+
+create policy "Allow public insert on players" on public.players for insert to anon, authenticated with check (true);
+create policy "Allow public select on players" on public.players for select to anon, authenticated using (true);
+create policy "Allow public update on players" on public.players for update to anon, authenticated using (true);
+
+drop policy if exists "Allow public insert on game_farms" on public.game_farms;
+drop policy if exists "Allow public select on game_farms" on public.game_farms;
+drop policy if exists "Allow public update on game_farms" on public.game_farms;
+
+create policy "Allow public insert on game_farms" on public.game_farms for insert to anon, authenticated with check (true);
+create policy "Allow public select on game_farms" on public.game_farms for select to anon, authenticated using (true);
+create policy "Allow public update on game_farms" on public.game_farms for update to anon, authenticated using (true);

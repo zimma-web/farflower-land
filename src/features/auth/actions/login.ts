@@ -9,9 +9,46 @@ type Request = {
   transactionId: string;
 };
 
+export async function getRealFarcasterFid(): Promise<number> {
+  try {
+    const context = (await Promise.race([
+      sdk.context,
+      new Promise((resolve) => setTimeout(() => resolve(null), 1500)),
+    ])) as any;
+
+    if (context?.user?.fid != null) {
+      return Number(context.user.fid);
+    }
+  } catch (_) {}
+
+  try {
+    const res = (await Promise.race([
+      sdk.quickAuth.getToken(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 1500)),
+    ])) as any;
+
+    if (res?.token) {
+      const decoded = decodeToken(res.token);
+      if (decoded?.sub != null) {
+        return Number(decoded.sub);
+      }
+    }
+  } catch (_) {}
+
+  return 1001;
+}
+
 export async function loginRequest(request: Request) {
   void request;
   let token = "";
+
+  const realFid = await getRealFarcasterFid();
+  try {
+    await syncPlayerToSupabase(realFid);
+  } catch (syncErr) {
+    // eslint-disable-next-line no-console
+    console.error("Error syncing player in loginRequest:", syncErr);
+  }
 
   try {
     const res = (await Promise.race([
@@ -23,16 +60,6 @@ export async function loginRequest(request: Request) {
     token = res?.token || "";
   } catch (_) {
     token = "farcaster_dev_token";
-  }
-
-  // Decode token after obtaining it and sync player to Supabase
-  try {
-    const decoded = decodeToken(token);
-    const realFid = decoded.sub != null ? Number(decoded.sub) : 1001;
-    await syncPlayerToSupabase(realFid);
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error("Error syncing player in loginRequest:", err);
   }
 
   const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
