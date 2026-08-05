@@ -12,14 +12,20 @@ module.exports = async function handler(request: any, response: any) {
   }
 
   try {
-    let identity;
-    try {
-      identity = await requireFarcasterUser(request);
-    } catch (_) {
-      identity = { sub: "1001" };
+    // Extract real numeric Farcaster FID from request header or JWT identity
+    const headerFid = request.headers["x-farcaster-fid"] || request.headers?.["x-farcaster-fid"];
+    let fid = headerFid ? Number(headerFid) : null;
+
+    if (!fid || isNaN(fid)) {
+      let identity;
+      try {
+        identity = await requireFarcasterUser(request);
+      } catch (_) {
+        identity = null;
+      }
+      fid = Number(identity?.sub || 1001);
     }
 
-    const fid = Number(identity?.sub || 1001);
     const database = getAdminDatabase();
     const now = new Date().toISOString();
 

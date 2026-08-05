@@ -71,6 +71,7 @@ export async function loginRequest(request: Request) {
       headers: {
         "content-type": "application/json;charset=UTF-8",
         Authorization: `Bearer ${token}`,
+        "x-farcaster-fid": String(realFid),
       },
       signal: controller?.signal,
     });
