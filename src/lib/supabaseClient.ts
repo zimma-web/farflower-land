@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { OFFLINE_FARM } from "features/game/lib/landData";
 
 const SUPABASE_URL =
   (import.meta?.env?.VITE_SUPABASE_URL as string) ||
@@ -112,6 +113,22 @@ export async function updatePlayerLandStatusInSupabase(playerId: string, hasLand
       .eq("id", playerId);
 
     if (error) throw error;
+
+    // Auto-create initial farm state row in game_farms if land granted
+    if (hasLand) {
+      const { data: existingFarm } = await supabase
+        .from("game_farms")
+        .select("id")
+        .eq("player_id", playerId)
+        .maybeSingle();
+
+      if (!existingFarm) {
+        await supabase
+          .from("game_farms")
+          .insert({ player_id: playerId, state: OFFLINE_FARM });
+      }
+    }
+
     return true;
   } catch (err) {
     // eslint-disable-next-line no-console

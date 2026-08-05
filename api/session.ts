@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { requireFarcasterUser } = require("./_lib/auth");
 const { getAdminDatabase } = require("./_lib/supabase");
+const { OFFLINE_FARM } = require("../src/features/game/lib/landData");
 
 module.exports = async function handler(request: any, response: any) {
   response.setHeader("Cache-Control", "no-store");
@@ -27,15 +28,15 @@ module.exports = async function handler(request: any, response: any) {
     try {
       const { data: existingPlayer } = await database
         .from("players")
-        .select("id, farcaster_fid")
+        .select("id, farcaster_fid, has_land")
         .eq("farcaster_fid", fid)
         .maybeSingle();
 
       if (!existingPlayer) {
         const { data: newPlayer, error: insErr } = await database
           .from("players")
-          .insert({ farcaster_fid: fid, last_seen_at: now })
-          .select("id, farcaster_fid")
+          .insert({ farcaster_fid: fid, last_seen_at: now, has_land: false })
+          .select("id, farcaster_fid, has_land")
           .single();
 
         if (insErr) {
@@ -67,14 +68,25 @@ module.exports = async function handler(request: any, response: any) {
           .maybeSingle();
 
         farm = existingFarm;
+
+        // Auto-create farm row if player.has_land is true but no farm row exists yet
+        if (!farm && player.has_land) {
+          const { data: newFarm } = await database
+            .from("game_farms")
+            .insert({ player_id: player.id, state: OFFLINE_FARM })
+            .select("id, state, revision")
+            .single();
+
+          farm = newFarm;
+        }
       } catch (farmDbErr) {
         // eslint-disable-next-line no-console
         console.error("Supabase farm fetch error:", farmDbErr);
       }
     }
 
-    // 3. If player has NO land created yet, return 404 NO_FARM so user sees 1 USDC Land creation modal
-    if (!farm) {
+    // 3. If player has NO land created yet and has_land is false, return 404 NO_FARM
+    if (!farm && !player?.has_land) {
       response.status(404).json({
         error: "NO_FARM",
         message: "Player registered in Supabase, but land not purchased yet.",
@@ -84,16 +96,21 @@ module.exports = async function handler(request: any, response: any) {
       return;
     }
 
+    // Fallback default state if farm is empty
+    const gameState = farm?.state || OFFLINE_FARM;
+    const farmId = farm?.id ? String(farm.id) : String(player?.id || 1);
+    const revision = farm?.revision || 1;
+
     // 4. Player has an active land! Return farm state and session
     response.status(200).json({
-      farmId: String(farm.id),
+      farmId,
       farmAddress: `fid:${fid}`,
-      game: farm.state,
+      game: gameState,
       deviceTrackerId: `fid:${fid}`,
       announcements: {},
       verified: true,
       moderation: { muted: false },
-      sessionId: `fid:${fid}:${farm.revision || 1}`,
+      sessionId: `fid:${fid}:${revision}`,
       analyticsId: `fid:${fid}`,
       purchases: [],
       oauthNonce: "",
