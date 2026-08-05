@@ -88,44 +88,46 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  // Modern Professional Login Guard Modal
+  // Sneat Admin Template Login Modal (#696cff Primary Purple & #f5f5f9 Background)
   if (!isAuthenticated) {
     return createPortal(
-      <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 font-sans text-slate-100 pointer-events-auto">
-        <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 relative pointer-events-auto">
-          <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-            <div className="flex items-center space-x-3">
-              <div className="p-2.5 bg-indigo-600/10 border border-indigo-500/20 rounded-xl text-indigo-400">
-                🔒
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-white tracking-tight">Admin Authentication</h2>
-                <p className="text-xs text-slate-400">Enter master password to access dashboard</p>
-              </div>
+      <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-[#566a7f]/50 backdrop-blur-sm p-4 font-sans text-[#566a7f] pointer-events-auto">
+        <div className="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-100 p-8 relative pointer-events-auto">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            ✕
+          </button>
+
+          {/* Sneat Logo Header */}
+          <div className="flex flex-col items-center text-center space-y-2 mb-6">
+            <div className="w-12 h-12 bg-[#696cff]/10 rounded-xl flex items-center justify-center text-[#696cff] font-extrabold text-2xl">
+              👑
             </div>
-            <button
-              onClick={onClose}
-              className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
-            >
-              ✕
-            </button>
+            <div>
+              <h2 className="text-xl font-bold text-[#566a7f] tracking-tight">Sneat Admin Panel</h2>
+              <p className="text-xs text-gray-400 mt-0.5">Please sign-in to your admin dashboard</p>
+            </div>
           </div>
 
-          <form onSubmit={handleAdminLogin} className="mt-5 space-y-4">
+          <form onSubmit={handleAdminLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Master Password</label>
+              <label className="block text-xs font-semibold text-[#566a7f] mb-1.5 uppercase tracking-wider">
+                Admin Password
+              </label>
               <input
                 type="password"
-                placeholder="Enter password..."
+                placeholder="••••••••••••"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-mono"
+                className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-lg text-sm text-[#566a7f] placeholder-gray-400 focus:outline-none focus:border-[#696cff] focus:ring-1 focus:ring-[#696cff] transition-all font-mono shadow-sm"
                 autoFocus
               />
             </div>
 
             {passError && (
-              <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-400 font-medium">
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-600 font-medium">
                 ⚠️ {passError}
               </div>
             )}
@@ -133,9 +135,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold rounded-xl text-sm shadow-lg shadow-indigo-600/20 transition-all disabled:opacity-50"
+              className="w-full py-2.5 px-4 bg-[#696cff] hover:bg-[#5f61e6] active:bg-[#5254cf] text-white font-semibold rounded-lg text-sm shadow-md shadow-[#696cff]/30 transition-all disabled:opacity-50"
             >
-              {isLoading ? "Authenticating..." : "Login to Admin Dashboard"}
+              {isLoading ? "Signing in..." : "Sign in to Dashboard"}
             </button>
           </form>
         </div>
@@ -226,86 +228,86 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
         setMessage({ text: `Failed to save farm state.`, type: "error" });
       }
     } catch (e) {
-      setMessage({ text: `Invalid JSON format! Check syntax.`, type: "error" });
+      setMessage({ text: `Invalid JSON syntax format!`, type: "error" });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Modern Professional Main Dashboard Modal
+  // Sneat Admin Template Main Dashboard Container (#f5f5f9 Theme)
   return createPortal(
-    <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 font-sans text-slate-100 pointer-events-auto">
-      <div className="w-full max-w-4xl max-h-[90vh] bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden pointer-events-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/50">
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-[#566a7f]/50 backdrop-blur-sm p-4 font-sans text-[#566a7f] pointer-events-auto">
+      <div className="w-full max-w-5xl max-h-[92vh] bg-[#f5f5f9] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 pointer-events-auto">
+        {/* Sneat Navbar */}
+        <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 shadow-sm">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl text-white font-bold text-sm shadow-md">
+            <div className="w-9 h-9 bg-[#696cff] text-white rounded-lg flex items-center justify-center font-black text-lg shadow-sm shadow-[#696cff]/40">
               👑
             </div>
             <div>
-              <h2 className="text-base font-bold text-white tracking-tight">Farflower Admin Control Panel</h2>
-              <p className="text-xs text-slate-400">Database Management & Game State Control</p>
+              <h2 className="text-base font-bold text-[#566a7f] tracking-tight">Sneat Admin Panel</h2>
+              <p className="text-xs text-gray-400">Farflower Land Database & P2E System</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition-colors"
+            className="text-gray-400 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors"
           >
             ✕
           </button>
         </div>
 
-        {/* Tab Navigation Bar */}
-        <div className="flex space-x-2 px-6 pt-3 pb-1 border-b border-slate-800 bg-slate-950/40">
+        {/* Sneat Tab Navigation Bar */}
+        <div className="flex space-x-2 px-6 py-3 bg-white border-b border-gray-200 shadow-xs">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
               activeTab === "overview"
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
+                ? "bg-[#696cff] text-white shadow-md shadow-[#696cff]/30"
+                : "text-[#696cff] bg-[#696cff]/10 hover:bg-[#696cff]/20"
             }`}
           >
-            📊 Overview
+            📊 Analytics Overview
           </button>
           <button
             onClick={() => setActiveTab("players")}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
               activeTab === "players"
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
+                ? "bg-[#696cff] text-white shadow-md shadow-[#696cff]/30"
+                : "text-[#696cff] bg-[#696cff]/10 hover:bg-[#696cff]/20"
             }`}
           >
-            👥 Players ({players.length})
+            👥 User Management ({players.length})
           </button>
           <button
             onClick={() => setActiveTab("farm")}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
               activeTab === "farm"
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
+                ? "bg-[#696cff] text-white shadow-md shadow-[#696cff]/30"
+                : "text-[#696cff] bg-[#696cff]/10 hover:bg-[#696cff]/20"
             }`}
           >
             🌾 Farm State Editor
           </button>
           <button
             onClick={() => setActiveTab("settings")}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
               activeTab === "settings"
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
+                ? "bg-[#696cff] text-white shadow-md shadow-[#696cff]/30"
+                : "text-[#696cff] bg-[#696cff]/10 hover:bg-[#696cff]/20"
             }`}
           >
-            ⚙️ Config & Treasury
+            ⚙️ Treasury & Config
           </button>
         </div>
 
-        {/* Notification Banner */}
+        {/* Sneat Toast Notification Banner */}
         {message && (
           <div
-            className={`mx-6 mt-3 p-3 rounded-xl text-xs font-medium flex items-center justify-between border ${
+            className={`mx-6 mt-3 p-3 rounded-lg text-xs font-medium flex items-center justify-between shadow-sm border ${
               message.type === "success"
-                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                : "bg-rose-500/10 border-rose-500/20 text-rose-400"
+                ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                : "bg-red-50 border-red-200 text-red-700"
             }`}
           >
             <span>{message.text}</span>
@@ -315,62 +317,70 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
           </div>
         )}
 
-        {/* Main Content Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* TAB 1: OVERVIEW */}
+        {/* Sneat Content Area (#f5f5f9 Background) */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#f5f5f9]">
+          {/* TAB 1: SNEAT ANALYTICS OVERVIEW */}
           {activeTab === "overview" && (
             <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-slate-800/60 border border-slate-700/60 p-5 rounded-2xl">
-                  <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-                    <span>TOTAL PLAYERS</span>
-                    <span className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">👥</span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="bg-white border border-gray-100 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Players</span>
+                    <div className="w-9 h-9 bg-[#696cff]/10 text-[#696cff] rounded-lg flex items-center justify-center text-lg">
+                      👥
+                    </div>
                   </div>
-                  <p className="text-3xl font-extrabold text-white mt-2">{totalPlayers}</p>
-                  <p className="text-[11px] text-slate-500 mt-1">Registered in Supabase</p>
+                  <p className="text-3xl font-extrabold text-[#566a7f] tracking-tight">{totalPlayers}</p>
+                  <p className="text-[11px] text-emerald-600 font-semibold mt-1">Registered in Supabase</p>
                 </div>
 
-                <div className="bg-slate-800/60 border border-slate-700/60 p-5 rounded-2xl">
-                  <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-                    <span>ACTIVE LANDS BOUGHT</span>
-                    <span className="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">🏞️</span>
+                <div className="bg-white border border-gray-100 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Active Lands Bought</span>
+                    <div className="w-9 h-9 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-lg">
+                      🏞️
+                    </div>
                   </div>
-                  <p className="text-3xl font-extrabold text-emerald-400 mt-2">{activeLands}</p>
-                  <p className="text-[11px] text-slate-500 mt-1">Paid 1.00 USDC activation</p>
+                  <p className="text-3xl font-extrabold text-emerald-600 tracking-tight">{activeLands}</p>
+                  <p className="text-[11px] text-gray-400 mt-1">1.00 USDC Paid Activations</p>
                 </div>
 
-                <div className="bg-slate-800/60 border border-slate-700/60 p-5 rounded-2xl">
-                  <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-                    <span>ESTIMATED REVENUE</span>
-                    <span className="p-2 bg-blue-500/10 rounded-lg text-blue-400">💰</span>
+                <div className="bg-white border border-gray-100 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Revenue</span>
+                    <div className="w-9 h-9 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-lg">
+                      💰
+                    </div>
                   </div>
-                  <p className="text-3xl font-extrabold text-blue-400 mt-2">${totalRevenue} USDC</p>
-                  <p className="text-[11px] text-slate-500 mt-1">Treasury total revenue</p>
+                  <p className="text-3xl font-extrabold text-[#696cff] tracking-tight">${totalRevenue} USDC</p>
+                  <p className="text-[11px] text-gray-400 mt-1">Treasury Receiver Earnings</p>
                 </div>
               </div>
 
-              {/* Status Box */}
-              <div className="bg-slate-800/40 border border-slate-700/60 rounded-2xl p-5 space-y-3">
-                <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Database & System Health</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                  <div className="flex items-center space-x-2 text-slate-300">
-                    <span className="text-emerald-400">✅</span>
-                    <span>Supabase Tables: <code className="bg-slate-950 px-2 py-0.5 rounded text-indigo-300 font-mono">players</code>, <code className="bg-slate-950 px-2 py-0.5 rounded text-indigo-300 font-mono">game_farms</code></span>
+              {/* Sneat Health Box */}
+              <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm space-y-4">
+                <h3 className="text-xs font-bold text-[#566a7f] uppercase tracking-wider">
+                  Supabase System Status & Contracts
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div className="flex items-center space-x-2 text-[#566a7f]">
+                    <span className="text-emerald-500 font-bold">✓</span>
+                    <span>Tables Active: <code className="bg-gray-100 px-2 py-0.5 rounded text-[#696cff] font-mono">players</code>, <code className="bg-gray-100 px-2 py-0.5 rounded text-[#696cff] font-mono">game_farms</code></span>
                   </div>
-                  <div className="flex items-center space-x-2 text-slate-300">
-                    <span className="text-emerald-400">✅</span>
-                    <span>RLS Policy: Permissive Client Access</span>
+                  <div className="flex items-center space-x-2 text-[#566a7f]">
+                    <span className="text-emerald-500 font-bold">✓</span>
+                    <span>RLS Access: Permissive REST Enabled</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-slate-300 sm:col-span-2">
-                    <span className="text-emerald-400">✅</span>
-                    <span>Treasury Address Receiver: <code className="bg-slate-950 px-2 py-0.5 rounded text-emerald-300 font-mono">0xe251A3a0D23859157ef8041394279f7Ba46C90e3</code></span>
+                  <div className="flex items-center space-x-2 text-[#566a7f] sm:col-span-2">
+                    <span className="text-emerald-500 font-bold">✓</span>
+                    <span>Treasury Address Receiver: <code className="bg-gray-100 px-2 py-0.5 rounded text-emerald-600 font-mono">0xe251A3a0D23859157ef8041394279f7Ba46C90e3</code></span>
                   </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* TAB 2: PLAYERS MANAGEMENT TABLE */}
+          {/* TAB 2: SNEAT USER MANAGEMENT TABLE */}
           {activeTab === "players" && (
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -379,67 +389,73 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                   placeholder="Search player by Farcaster FID..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full sm:w-72 px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                  className="w-full sm:w-80 px-4 py-2 bg-white border border-gray-300 rounded-lg text-xs text-[#566a7f] placeholder-gray-400 focus:outline-none focus:border-[#696cff] focus:ring-1 focus:ring-[#696cff] shadow-xs"
                 />
                 <button
                   onClick={loadData}
-                  className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition-all flex items-center gap-1.5"
+                  className="px-4 py-2 bg-white hover:bg-gray-50 border border-gray-300 text-[#566a7f] text-xs font-semibold rounded-lg transition-all shadow-xs flex items-center gap-2"
                 >
-                  🔄 Refresh Data
+                  🔄 Refresh Users
                 </button>
               </div>
 
-              <div className="border border-slate-800 rounded-2xl overflow-hidden bg-slate-950/40">
-                <table className="w-full text-left text-xs text-slate-300">
-                  <thead className="bg-slate-800/80 text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+              {/* Sneat Table Card */}
+              <div className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
+                <table className="w-full text-left text-xs text-[#566a7f]">
+                  <thead className="bg-gray-50 text-gray-400 font-bold uppercase tracking-wider text-[11px] border-b border-gray-200">
                     <tr>
-                      <th className="p-3.5">Farcaster FID</th>
-                      <th className="p-3.5">Land Status</th>
-                      <th className="p-3.5">Registration Date</th>
-                      <th className="p-3.5 text-right">Actions</th>
+                      <th className="p-4">Farcaster FID</th>
+                      <th className="p-4">Land Activation Status</th>
+                      <th className="p-4">Registration Date</th>
+                      <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/80">
+                  <tbody className="divide-y divide-gray-100">
                     {filteredPlayers.length === 0 ? (
                       <tr>
-                        <td colSpan={4} className="p-6 text-center text-slate-500">
-                          No players found in database.
+                        <td colSpan={4} className="p-8 text-center text-gray-400">
+                          No registered players found.
                         </td>
                       </tr>
                     ) : (
                       filteredPlayers.map((p) => (
-                        <tr key={p.id} className="hover:bg-slate-800/40 transition-colors">
-                          <td className="p-3.5 font-bold text-white font-mono">{p.farcaster_fid}</td>
-                          <td className="p-3.5">
+                        <tr key={p.id} className="hover:bg-gray-50/80 transition-colors">
+                          <td className="p-4 font-bold text-[#566a7f] font-mono text-sm">
+                            <span className="inline-flex items-center justify-center w-7 h-7 bg-[#696cff]/10 text-[#696cff] rounded-full mr-2 font-sans text-xs">
+                              👤
+                            </span>
+                            {p.farcaster_fid}
+                          </td>
+                          <td className="p-4">
                             {p.has_land ? (
-                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                ✅ Active (1 USDC)
+                              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
+                                Active (1.00 USDC)
                               </span>
                             ) : (
-                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                                ❌ Not Purchased
+                              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+                                Not Purchased
                               </span>
                             )}
                           </td>
-                          <td className="p-3.5 text-slate-400 text-[11px]">
+                          <td className="p-4 text-gray-400 text-xs">
                             {p.created_at ? new Date(p.created_at).toLocaleDateString() : "-"}
                           </td>
-                          <td className="p-3.5 text-right space-x-2">
+                          <td className="p-4 text-right space-x-2">
                             <button
                               onClick={() => handleToggleLand(p)}
-                              className="px-2.5 py-1 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 rounded-lg text-[11px] font-medium transition-all"
+                              className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 rounded-lg text-xs font-medium transition-all"
                             >
                               {p.has_land ? "Revoke Land" : "Grant Land"}
                             </button>
                             <button
                               onClick={() => handleSelectPlayerForFarm(p)}
-                              className="px-2.5 py-1 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 rounded-lg text-[11px] font-medium transition-all"
+                              className="px-3 py-1.5 bg-[#696cff]/10 hover:bg-[#696cff]/20 text-[#696cff] rounded-lg text-xs font-semibold transition-all"
                             >
                               Edit State
                             </button>
                             <button
                               onClick={() => handleDeletePlayer(p)}
-                              className="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 rounded-lg text-[11px] font-medium transition-all"
+                              className="px-3 py-1.5 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 rounded-lg text-xs font-medium transition-all"
                             >
                               Delete
                             </button>
@@ -453,44 +469,44 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
             </div>
           )}
 
-          {/* TAB 3: FARM STATE JSON EDITOR */}
+          {/* TAB 3: SNEAT FARM STATE EDITOR */}
           {activeTab === "farm" && (
             <div className="space-y-4">
               {!selectedPlayer ? (
-                <div className="p-8 text-center bg-slate-950/40 border border-slate-800 rounded-2xl text-slate-400 text-xs">
-                  <p>Select a player in the <b>👥 Players</b> tab to edit their farm state JSON.</p>
+                <div className="p-8 text-center bg-white border border-gray-100 rounded-xl shadow-sm text-gray-400 text-xs">
+                  <p>Please select a user from the <b>👥 User Management</b> tab to edit their farm state JSON.</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3.5 bg-slate-800/60 border border-slate-700/60 rounded-xl text-xs">
-                    <span className="text-slate-300">
-                      Editing state for FID: <b className="text-white font-mono">{selectedPlayer.farcaster_fid}</b>
+                <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-6 space-y-4">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg text-xs">
+                    <span className="text-[#566a7f]">
+                      Editing farm state for FID: <b className="text-[#696cff] font-mono text-sm">{selectedPlayer.farcaster_fid}</b>
                     </span>
                     <button
                       onClick={() => setSelectedPlayer(null)}
-                      className="text-indigo-400 hover:text-indigo-300 font-semibold"
+                      className="text-[#696cff] hover:underline font-bold"
                     >
-                      Change Player
+                      Change User
                     </button>
                   </div>
 
-                  {/* Quick Inject Buttons */}
+                  {/* Sneat Quick Inject Buttons */}
                   <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => handleInjectItems("coins")}
-                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 rounded-xl text-xs font-semibold transition-all"
+                      className="px-3.5 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 rounded-lg text-xs font-semibold transition-all shadow-xs"
                     >
                       🪙 +1,000 Coins
                     </button>
                     <button
                       onClick={() => handleInjectItems("gems")}
-                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-cyan-300 rounded-xl text-xs font-semibold transition-all"
+                      className="px-3.5 py-2 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 text-cyan-700 rounded-lg text-xs font-semibold transition-all shadow-xs"
                     >
                       💎 +100 Gems
                     </button>
                     <button
                       onClick={() => handleInjectItems("flower")}
-                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-purple-300 rounded-xl text-xs font-semibold transition-all"
+                      className="px-3.5 py-2 bg-[#696cff]/10 hover:bg-[#696cff]/20 text-[#696cff] rounded-lg text-xs font-semibold transition-all shadow-xs"
                     >
                       🌸 +500 Farflower Tokens
                     </button>
@@ -498,62 +514,70 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
 
                   {/* JSON Editor Textarea */}
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-semibold text-slate-300">Farm State JSON Editor:</label>
+                    <label className="block text-xs font-bold text-[#566a7f] uppercase tracking-wider">
+                      Farm State JSON Payload:
+                    </label>
                     <textarea
-                      rows={12}
+                      rows={13}
                       value={jsonString}
                       onChange={(e) => setJsonString(e.target.value)}
-                      className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-emerald-400 font-mono text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all leading-relaxed"
+                      className="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl text-emerald-400 font-mono text-xs focus:outline-none focus:border-[#696cff] focus:ring-1 focus:ring-[#696cff] transition-all leading-relaxed shadow-inner"
                     />
                   </div>
 
                   <button
                     onClick={handleSaveFarmState}
                     disabled={isLoading}
-                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold rounded-xl text-xs shadow-lg shadow-indigo-600/20 transition-all disabled:opacity-50"
+                    className="w-full py-3 bg-[#696cff] hover:bg-[#5f61e6] active:bg-[#5254cf] text-white font-semibold rounded-lg text-xs shadow-md shadow-[#696cff]/30 transition-all disabled:opacity-50"
                   >
-                    {isLoading ? "Saving Farm State..." : "💾 Save Farm State Changes"}
+                    {isLoading ? "Saving Farm State..." : "💾 Save Farm State Payload"}
                   </button>
                 </div>
               )}
             </div>
           )}
 
-          {/* TAB 4: CONFIG & TREASURY */}
+          {/* TAB 4: SNEAT TREASURY & CONFIG */}
           {activeTab === "settings" && (
-            <div className="space-y-4 text-xs">
-              <div className="bg-slate-800/40 border border-slate-700/60 rounded-2xl p-5 space-y-4">
-                <h3 className="text-sm font-bold text-white tracking-tight">⚙️ P2E System & Treasury Settings</h3>
+            <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-6 space-y-4 text-xs">
+              <h3 className="text-sm font-bold text-[#566a7f] tracking-tight border-b border-gray-100 pb-3">
+                ⚙️ P2E System & Treasury Settings
+              </h3>
 
-                <div className="space-y-1.5">
-                  <label className="block font-semibold text-slate-300">Treasury Address Recipient (1.00 USDC Fee):</label>
-                  <input
-                    type="text"
-                    readOnly
-                    value="0xe251A3a0D23859157ef8041394279f7Ba46C90e3"
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-emerald-400 font-mono text-xs"
-                  />
-                </div>
+              <div className="space-y-1.5">
+                <label className="block font-bold text-gray-500 uppercase tracking-wider">
+                  Treasury Address Recipient (1.00 USDC Fee):
+                </label>
+                <input
+                  type="text"
+                  readOnly
+                  value="0xe251A3a0D23859157ef8041394279f7Ba46C90e3"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-emerald-700 font-mono text-xs"
+                />
+              </div>
 
-                <div className="space-y-1.5">
-                  <label className="block font-semibold text-slate-300">Farflower Token Contract:</label>
-                  <input
-                    type="text"
-                    readOnly
-                    value="0xC462c9611871906b8C0152bDa5Ca55E1f439D7e4"
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-indigo-400 font-mono text-xs"
-                  />
-                </div>
+              <div className="space-y-1.5">
+                <label className="block font-bold text-gray-500 uppercase tracking-wider">
+                  Farflower Token Contract:
+                </label>
+                <input
+                  type="text"
+                  readOnly
+                  value="0xC462c9611871906b8C0152bDa5Ca55E1f439D7e4"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-[#696cff] font-mono text-xs"
+                />
+              </div>
 
-                <div className="space-y-1.5">
-                  <label className="block font-semibold text-slate-300">Withdrawal Contract:</label>
-                  <input
-                    type="text"
-                    readOnly
-                    value="0x9dDD15Fd393523F57EDf8937D44705C9044B16c0"
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-purple-400 font-mono text-xs"
-                  />
-                </div>
+              <div className="space-y-1.5">
+                <label className="block font-bold text-gray-500 uppercase tracking-wider">
+                  Withdrawal Contract:
+                </label>
+                <input
+                  type="text"
+                  readOnly
+                  value="0x9dDD15Fd393523F57EDf8937D44705C9044B16c0"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-purple-700 font-mono text-xs"
+                />
               </div>
             </div>
           )}
