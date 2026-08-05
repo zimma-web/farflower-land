@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "components/ui/Button";
 import { Panel } from "components/ui/Panel";
-import { Label } from "components/ui/Label";
 import { SUNNYSIDE } from "assets/sunnyside";
 import {
   fetchAllPlayersFromSupabase,
@@ -77,21 +77,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
 
   // Password Authentication Guard Screen
   if (!isAuthenticated) {
-    return (
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-        <Panel className="w-full max-w-md p-4 relative bg-[#e2b97c] text-center">
+    return createPortal(
+      <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 pointer-events-auto">
+        <Panel className="w-full max-w-md p-4 relative bg-[#e2b97c] text-center pointer-events-auto shadow-2xl">
           <div className="flex items-center justify-between border-b-2 border-[#b58951] pb-2 mb-3">
             <div className="flex items-center space-x-2">
               <img src={SUNNYSIDE.icons.lock} className="h-6" />
               <h2 className="text-base font-bold text-brown-900">👑 FARFLOWER ADMIN LOGIN</h2>
             </div>
-            <Button onClick={onClose} className="px-2 py-0.5 text-xs">
+            <Button onClick={onClose} className="px-2 py-0.5 text-xs pointer-events-auto cursor-pointer">
               X
             </Button>
           </div>
 
-          <form onSubmit={handleAdminLogin} className="space-y-3">
-            <p className="text-xs text-brown-900">
+          <form onSubmit={handleAdminLogin} className="space-y-3 pointer-events-auto">
+            <p className="text-xs text-brown-900 font-semibold">
               Please enter the Admin Password to access Control Panel & Database:
             </p>
 
@@ -100,18 +100,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
               placeholder="Enter Admin Password..."
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
-              className="w-full p-2 text-sm rounded border border-brown-500 bg-amber-50 text-center font-bold"
+              className="w-full p-2 text-sm rounded border-2 border-brown-600 bg-white text-brown-900 text-center font-bold pointer-events-auto cursor-text select-text focus:outline-none focus:ring-2 focus:ring-amber-500"
               autoFocus
             />
 
             {passError && <p className="text-xs text-red-600 font-bold">{passError}</p>}
 
-            <Button type="submit" disabled={isLoading} className="w-full py-1.5 text-sm">
-              {isLoading ? "Verifying with server..." : "🔑 Login to Admin Panel"}
+            <Button type="submit" disabled={isLoading} className="w-full py-2 text-sm pointer-events-auto cursor-pointer">
+              {isLoading ? "Verifying..." : "🔑 Login to Admin Panel"}
             </Button>
           </form>
         </Panel>
-      </div>
+      </div>,
+      document.body,
     );
   }
 
@@ -199,22 +200,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-      <Panel className="w-full max-w-3xl max-h-[90vh] flex flex-col p-3 relative bg-[#e2b97c]">
+  return createPortal(
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto pointer-events-auto">
+      <Panel className="w-full max-w-3xl max-h-[90vh] flex flex-col p-3 relative bg-[#e2b97c] pointer-events-auto shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b-2 border-[#b58951] pb-2 mb-2">
           <div className="flex items-center space-x-2">
             <img src={SUNNYSIDE.icons.settings} className="h-6" />
             <h2 className="text-lg font-bold text-brown-900">👑 FARFLOWER ADMIN CONTROL PANEL</h2>
           </div>
-          <Button onClick={onClose} className="px-2 py-0.5 text-xs">
+          <Button onClick={onClose} className="px-2 py-0.5 text-xs pointer-events-auto cursor-pointer">
             X
           </Button>
         </div>
 
         {/* Tab Buttons */}
-        <div className="flex space-x-1 mb-3 overflow-x-auto pb-1">
+        <div className="flex space-x-1 mb-3 overflow-x-auto pb-1 pointer-events-auto">
           <Button
             className={`text-xs py-1 px-3 ${activeTab === "overview" ? "bg-amber-600 text-white" : ""}`}
             onClick={() => setActiveTab("overview")}
@@ -250,7 +251,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
 
         {/* TAB 1: OVERVIEW */}
         {activeTab === "overview" && (
-          <div className="flex-1 overflow-y-auto space-y-3">
+          <div className="flex-1 overflow-y-auto space-y-3 pointer-events-auto">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="bg-amber-100/80 border border-amber-600 p-3 rounded text-center">
                 <span className="text-xs text-amber-900 font-bold">TOTAL PLAYERS</span>
@@ -277,16 +278,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
 
         {/* TAB 2: PLAYERS MANAGEMENT */}
         {activeTab === "players" && (
-          <div className="flex-1 overflow-y-auto space-y-2">
+          <div className="flex-1 overflow-y-auto space-y-2 pointer-events-auto">
             <div className="flex justify-between items-center mb-1">
               <input
                 type="text"
                 placeholder="Search by Farcaster FID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="text-xs p-1 rounded border border-brown-400 bg-amber-50 w-64"
+                className="text-xs p-1 rounded border border-brown-400 bg-white text-brown-900 w-64 pointer-events-auto cursor-text select-text"
               />
-              <Button onClick={loadData} className="text-xs py-1 px-2">
+              <Button onClick={loadData} className="text-xs py-1 px-2 pointer-events-auto cursor-pointer">
                 🔄 Refresh
               </Button>
             </div>
@@ -329,19 +330,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                         <td className="p-1.5 flex space-x-1">
                           <button
                             onClick={() => handleToggleLand(p)}
-                            className="bg-amber-700 text-white text-[10px] px-1.5 py-0.5 rounded hover:bg-amber-800"
+                            className="bg-amber-700 text-white text-[10px] px-1.5 py-0.5 rounded hover:bg-amber-800 pointer-events-auto cursor-pointer"
                           >
                             {p.has_land ? "Revoke Land" : "Grant Land"}
                           </button>
                           <button
                             onClick={() => handleSelectPlayerForFarm(p)}
-                            className="bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded hover:bg-blue-700"
+                            className="bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded hover:bg-blue-700 pointer-events-auto cursor-pointer"
                           >
                             Edit Inventory
                           </button>
                           <button
                             onClick={() => handleDeletePlayer(p)}
-                            className="bg-red-600 text-white text-[10px] px-1.5 py-0.5 rounded hover:bg-red-700"
+                            className="bg-red-600 text-white text-[10px] px-1.5 py-0.5 rounded hover:bg-red-700 pointer-events-auto cursor-pointer"
                           >
                             Delete
                           </button>
@@ -357,7 +358,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
 
         {/* TAB 3: FARM STATE EDITOR */}
         {activeTab === "farm" && (
-          <div className="flex-1 overflow-y-auto space-y-2">
+          <div className="flex-1 overflow-y-auto space-y-2 pointer-events-auto">
             {!selectedPlayer ? (
               <div className="p-4 text-center text-brown-800">
                 <p className="text-xs">Select a player in the <b>👥 Players</b> tab to edit their farm inventory.</p>
@@ -370,20 +371,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                   </span>
                   <button
                     onClick={() => setSelectedPlayer(null)}
-                    className="text-amber-800 font-bold underline"
+                    className="text-amber-800 font-bold underline pointer-events-auto cursor-pointer"
                   >
                     Change Player
                   </button>
                 </div>
 
                 <div className="flex space-x-2">
-                  <Button onClick={() => handleInjectItems("coins")} className="text-xs py-1">
+                  <Button onClick={() => handleInjectItems("coins")} className="text-xs py-1 pointer-events-auto cursor-pointer">
                     +1,000 Coins
                   </Button>
-                  <Button onClick={() => handleInjectItems("gems")} className="text-xs py-1">
+                  <Button onClick={() => handleInjectItems("gems")} className="text-xs py-1 pointer-events-auto cursor-pointer">
                     +100 Gems
                   </Button>
-                  <Button onClick={() => handleInjectItems("flower")} className="text-xs py-1">
+                  <Button onClick={() => handleInjectItems("flower")} className="text-xs py-1 pointer-events-auto cursor-pointer">
                     +500 Farflower
                   </Button>
                 </div>
@@ -394,11 +395,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                     rows={12}
                     value={jsonString}
                     onChange={(e) => setJsonString(e.target.value)}
-                    className="w-full font-mono text-[11px] p-2 bg-black text-green-400 rounded border border-brown-500"
+                    className="w-full font-mono text-[11px] p-2 bg-black text-green-400 rounded border border-brown-500 pointer-events-auto cursor-text select-text"
                   />
                 </div>
 
-                <Button onClick={handleSaveFarmState} disabled={isLoading} className="w-full py-1.5">
+                <Button onClick={handleSaveFarmState} disabled={isLoading} className="w-full py-1.5 pointer-events-auto cursor-pointer">
                   {isLoading ? "Saving..." : "💾 Save Farm State Changes"}
                 </Button>
               </div>
@@ -408,7 +409,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
 
         {/* TAB 4: CONFIG & TREASURY */}
         {activeTab === "settings" && (
-          <div className="flex-1 overflow-y-auto space-y-3 text-xs text-brown-900">
+          <div className="flex-1 overflow-y-auto space-y-3 text-xs text-brown-900 pointer-events-auto">
             <div className="bg-amber-50 p-3 rounded border border-brown-300 space-y-2">
               <h3 className="font-bold text-sm text-brown-900">⚙️ P2E System & Treasury Settings</h3>
               <div>
@@ -417,7 +418,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                   type="text"
                   readOnly
                   value="0xe251A3a0D23859157ef8041394279f7Ba46C90e3"
-                  className="w-full p-1 border rounded bg-amber-100 font-mono text-[11px] mt-0.5"
+                  className="w-full p-1 border rounded bg-amber-100 font-mono text-[11px] mt-0.5 select-all"
                 />
               </div>
               <div>
@@ -426,7 +427,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                   type="text"
                   readOnly
                   value="0xC462c9611871906b8C0152bDa5Ca55E1f439D7e4"
-                  className="w-full p-1 border rounded bg-amber-100 font-mono text-[11px] mt-0.5"
+                  className="w-full p-1 border rounded bg-amber-100 font-mono text-[11px] mt-0.5 select-all"
                 />
               </div>
               <div>
@@ -435,13 +436,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                   type="text"
                   readOnly
                   value="0x9dDD15Fd393523F57EDf8937D44705C9044B16c0"
-                  className="w-full p-1 border rounded bg-amber-100 font-mono text-[11px] mt-0.5"
+                  className="w-full p-1 border rounded bg-amber-100 font-mono text-[11px] mt-0.5 select-all"
                 />
               </div>
             </div>
           </div>
         )}
       </Panel>
-    </div>
+    </div>,
+    document.body,
   );
 };
