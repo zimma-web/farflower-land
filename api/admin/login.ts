@@ -9,10 +9,17 @@ module.exports = async function handler(request: any, response: any) {
   }
 
   try {
-    const { password } = request.body || {};
-    const expectedPassword = process.env.ADMIN_PASSWORD || "Akuasw12";
+    let body = request.body;
+    if (typeof body === "string") {
+      try {
+        body = JSON.parse(body);
+      } catch (_) {}
+    }
 
-    if (password === expectedPassword) {
+    const inputPassword = String(body?.password || "").trim();
+    const expectedPassword = String(process.env.ADMIN_PASSWORD || "Akuasw12").trim();
+
+    if (inputPassword === expectedPassword) {
       response.status(200).json({
         success: true,
         adminToken: `admin_token_${Date.now()}_farflower_authorized`,
