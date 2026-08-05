@@ -51,10 +51,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
         sessionStorage.setItem("farflower_admin_auth", data.adminToken || "true");
         setPassError(null);
       } else {
-        setPassError(data?.error || "Password Admin Salah!");
+        setPassError(data?.error || "Incorrect Admin Password!");
       }
     } catch (_) {
-      setPassError("Gagal terhubung ke Server Authentication.");
+      setPassError("Failed to connect to authentication server.");
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +83,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
           <div className="flex items-center justify-between border-b-2 border-[#b58951] pb-2 mb-3">
             <div className="flex items-center space-x-2">
               <img src={SUNNYSIDE.icons.lock} className="h-6" />
-              <h2 className="text-base font-bold text-brown-900">👑 LOGIN ADMIN FARFLOWER</h2>
+              <h2 className="text-base font-bold text-brown-900">👑 FARFLOWER ADMIN LOGIN</h2>
             </div>
             <Button onClick={onClose} className="px-2 py-0.5 text-xs">
               X
@@ -92,12 +92,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
 
           <form onSubmit={handleAdminLogin} className="space-y-3">
             <p className="text-xs text-brown-900">
-              Silakan masukkan Password Admin untuk mengakses Control Panel & Database:
+              Please enter the Admin Password to access Control Panel & Database:
             </p>
 
             <input
               type="password"
-              placeholder="Masukkan Password Admin..."
+              placeholder="Enter Admin Password..."
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
               className="w-full p-2 text-sm rounded border border-brown-500 bg-amber-50 text-center font-bold"
@@ -107,7 +107,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
             {passError && <p className="text-xs text-red-600 font-bold">{passError}</p>}
 
             <Button type="submit" disabled={isLoading} className="w-full py-1.5 text-sm">
-              {isLoading ? "Memverifikasi Ke Server..." : "🔑 Masuk Admin Panel"}
+              {isLoading ? "Verifying with server..." : "🔑 Login to Admin Panel"}
             </Button>
           </form>
         </Panel>
@@ -135,7 +135,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
   };
 
   const handleDeletePlayer = async (player: any) => {
-    if (!window.confirm(`Hapus total player FID ${player.farcaster_fid} dari database?`)) {
+    if (!window.confirm(`Permanently delete player FID ${player.farcaster_fid} from database?`)) {
       return;
     }
     setIsLoading(true);
@@ -187,13 +187,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
       setIsLoading(true);
       const success = await updateFarmStateInSupabase(selectedPlayer.id, parsed);
       if (success) {
-        setMessage(`State kebun untuk FID ${selectedPlayer.farcaster_fid} berhasil disimpan!`);
+        setMessage(`Farm state for FID ${selectedPlayer.farcaster_fid} saved successfully!`);
         setSelectedFarmState(parsed);
       } else {
-        setMessage(`Gagal menyimpan state kebun.`);
+        setMessage(`Failed to save farm state.`);
       }
     } catch (e) {
-      setMessage(`Format JSON tidak valid!`);
+      setMessage(`Invalid JSON format!`);
     } finally {
       setIsLoading(false);
     }
@@ -267,10 +267,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div className="bg-brown-200 p-3 rounded text-xs text-brown-900 space-y-1">
-              <p className="font-bold">Status Database Supabase:</p>
+              <p className="font-bold">Supabase Database Status:</p>
               <p>✅ Public Tables: <code className="bg-amber-100 px-1">players</code>, <code className="bg-amber-100 px-1">game_farms</code></p>
               <p>✅ RLS Status: Disabled / Permissive Access Active</p>
-              <p>✅ Treasury Address Receiver: <code className="bg-amber-100 px-1">0xe251...90e3</code></p>
+              <p>✅ Treasury Receiver Address: <code className="bg-amber-100 px-1">0xe251...90e3</code></p>
             </div>
           </div>
         )}
@@ -281,7 +281,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
             <div className="flex justify-between items-center mb-1">
               <input
                 type="text"
-                placeholder="Cari berdasarkan Farcaster FID..."
+                placeholder="Search by Farcaster FID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="text-xs p-1 rounded border border-brown-400 bg-amber-50 w-64"
@@ -296,16 +296,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                 <thead className="bg-brown-300 text-brown-900">
                   <tr>
                     <th className="p-1.5">Farcaster FID</th>
-                    <th className="p-1.5">Status Land</th>
-                    <th className="p-1.5">Terdaftar</th>
-                    <th className="p-1.5">Aksi Control</th>
+                    <th className="p-1.5">Land Status</th>
+                    <th className="p-1.5">Registered</th>
+                    <th className="p-1.5">Action Controls</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-brown-200">
                   {filteredPlayers.length === 0 ? (
                     <tr>
                       <td colSpan={4} className="p-2 text-center text-brown-600">
-                        Belum ada player terdaftar.
+                        No players registered yet.
                       </td>
                     </tr>
                   ) : (
@@ -315,11 +315,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                         <td className="p-1.5">
                           {p.has_land ? (
                             <span className="bg-green-200 text-green-800 px-1.5 py-0.5 rounded font-bold">
-                              ✅ Beli (1 USDC)
+                              ✅ Active (1 USDC)
                             </span>
                           ) : (
                             <span className="bg-red-200 text-red-800 px-1.5 py-0.5 rounded">
-                              ❌ Belum Beli
+                              ❌ Not Purchased
                             </span>
                           )}
                         </td>
@@ -343,7 +343,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                             onClick={() => handleDeletePlayer(p)}
                             className="bg-red-600 text-white text-[10px] px-1.5 py-0.5 rounded hover:bg-red-700"
                           >
-                            Hapus
+                            Delete
                           </button>
                         </td>
                       </tr>
@@ -360,19 +360,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
           <div className="flex-1 overflow-y-auto space-y-2">
             {!selectedPlayer ? (
               <div className="p-4 text-center text-brown-800">
-                <p className="text-xs">Silakan pilih player di tab <b>👥 Players</b> untuk mengedit isi kebun/inventory mereka.</p>
+                <p className="text-xs">Select a player in the <b>👥 Players</b> tab to edit their farm inventory.</p>
               </div>
             ) : (
               <div className="space-y-2">
                 <div className="bg-amber-100 p-2 rounded flex justify-between items-center text-xs">
                   <span>
-                    Mengedit Kebun Player FID: <b>{selectedPlayer.farcaster_fid}</b>
+                    Editing Farm State for Player FID: <b>{selectedPlayer.farcaster_fid}</b>
                   </span>
                   <button
                     onClick={() => setSelectedPlayer(null)}
                     className="text-amber-800 font-bold underline"
                   >
-                    Ganti Player
+                    Change Player
                   </button>
                 </div>
 
@@ -399,7 +399,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                 </div>
 
                 <Button onClick={handleSaveFarmState} disabled={isLoading} className="w-full py-1.5">
-                  {isLoading ? "Menyimpan..." : "💾 Simpan Perubahan State Kebun"}
+                  {isLoading ? "Saving..." : "💾 Save Farm State Changes"}
                 </Button>
               </div>
             )}
@@ -412,7 +412,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
             <div className="bg-amber-50 p-3 rounded border border-brown-300 space-y-2">
               <h3 className="font-bold text-sm text-brown-900">⚙️ P2E System & Treasury Settings</h3>
               <div>
-                <label className="font-bold">Alamat Treasury Penerima Fee 1.00 USDC:</label>
+                <label className="font-bold">Treasury Address Recipient (1.00 USDC Fee):</label>
                 <input
                   type="text"
                   readOnly
@@ -421,7 +421,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                 />
               </div>
               <div>
-                <label className="font-bold">Kontrak Token Farflower:</label>
+                <label className="font-bold">Farflower Token Contract:</label>
                 <input
                   type="text"
                   readOnly
@@ -430,7 +430,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                 />
               </div>
               <div>
-                <label className="font-bold">Kontrak Penarikan (Withdrawal):</label>
+                <label className="font-bold">Withdrawal Contract:</label>
                 <input
                   type="text"
                   readOnly

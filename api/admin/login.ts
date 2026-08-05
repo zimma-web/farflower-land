@@ -20,7 +20,7 @@ module.exports = async function handler(request: any, response: any) {
     } else {
       response.status(401).json({
         success: false,
-        error: "Password Admin Salah!",
+        error: "Incorrect Admin Password!",
       });
     }
   } catch (error) {
