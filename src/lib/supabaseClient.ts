@@ -11,6 +11,21 @@ const SUPABASE_ANON_KEY =
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+export function createFreshStarterFarmState(baseState: any) {
+  try {
+    const fresh = JSON.parse(JSON.stringify(baseState || OFFLINE_FARM));
+    if (fresh.crops) {
+      Object.keys(fresh.crops).forEach((id) => {
+        delete fresh.crops[id].crop;
+      });
+    }
+    fresh.coins = 100;
+    return fresh;
+  } catch (_) {
+    return baseState || OFFLINE_FARM;
+  }
+}
+
 export async function syncPlayerToSupabase(
   fidInput?: number | string,
   extraData: { has_land?: boolean; land_activated_at?: string } = {},
@@ -59,6 +74,8 @@ export async function syncFarmToSupabase(fidInput: number | string, gameState: a
     const player = await syncPlayerToSupabase(fidInput);
     if (!player || !player.id) return null;
 
+    const cleanState = createFreshStarterFarmState(gameState);
+
     const { data: existingFarm } = await supabase
       .from("game_farms")
       .select("id")
@@ -68,11 +85,11 @@ export async function syncFarmToSupabase(fidInput: number | string, gameState: a
     if (!existingFarm) {
       await supabase
         .from("game_farms")
-        .insert({ player_id: player.id, state: gameState });
+        .insert({ player_id: player.id, state: cleanState });
     } else {
       await supabase
         .from("game_farms")
-        .update({ state: gameState, updated_at: new Date().toISOString() })
+        .update({ state: cleanState, updated_at: new Date().toISOString() })
         .eq("player_id", player.id);
     }
   } catch (err) {
@@ -114,7 +131,7 @@ export async function updatePlayerLandStatusInSupabase(playerId: string, hasLand
 
     if (error) throw error;
 
-    // Auto-create initial farm state row in game_farms if land granted
+    // Auto-create initial fresh farm state row in game_farms if land granted
     if (hasLand) {
       const { data: existingFarm } = await supabase
         .from("game_farms")
@@ -123,9 +140,10 @@ export async function updatePlayerLandStatusInSupabase(playerId: string, hasLand
         .maybeSingle();
 
       if (!existingFarm) {
+        const cleanState = createFreshStarterFarmState(OFFLINE_FARM);
         await supabase
           .from("game_farms")
-          .insert({ player_id: playerId, state: OFFLINE_FARM });
+          .insert({ player_id: playerId, state: cleanState });
       }
     }
 

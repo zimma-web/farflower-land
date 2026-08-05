@@ -10,27 +10,36 @@ type Request = {
 };
 
 export async function getRealFarcasterFid(): Promise<number> {
+  const cachedFid = sessionStorage.getItem("farcaster_real_fid");
+  if (cachedFid && Number(cachedFid) !== 1001) {
+    return Number(cachedFid);
+  }
+
   try {
     const context = (await Promise.race([
       sdk.context,
-      new Promise((resolve) => setTimeout(() => resolve(null), 1500)),
+      new Promise((resolve) => setTimeout(() => resolve(null), 5000)),
     ])) as any;
 
     if (context?.user?.fid != null) {
-      return Number(context.user.fid);
+      const fid = Number(context.user.fid);
+      sessionStorage.setItem("farcaster_real_fid", String(fid));
+      return fid;
     }
   } catch (_) {}
 
   try {
     const res = (await Promise.race([
       sdk.quickAuth.getToken(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 1500)),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 5000)),
     ])) as any;
 
     if (res?.token) {
       const decoded = decodeToken(res.token);
       if (decoded?.sub != null) {
-        return Number(decoded.sub);
+        const fid = Number(decoded.sub);
+        sessionStorage.setItem("farcaster_real_fid", String(fid));
+        return fid;
       }
     }
   } catch (_) {}
@@ -54,7 +63,7 @@ export async function loginRequest(request: Request) {
     const res = (await Promise.race([
       sdk.quickAuth.getToken(),
       new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Token timeout")), 2500),
+        setTimeout(() => reject(new Error("Token timeout")), 3500),
       ),
     ])) as any;
     token = res?.token || "";
@@ -63,7 +72,7 @@ export async function loginRequest(request: Request) {
   }
 
   const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-  const timeoutId = controller ? setTimeout(() => controller.abort(), 3000) : null;
+  const timeoutId = controller ? setTimeout(() => controller.abort(), 5000) : null;
 
   try {
     const response = await window.fetch(`${window.location.origin}/api/session`, {

@@ -4,6 +4,21 @@ const { requireFarcasterUser } = require("./_lib/auth");
 const { getAdminDatabase } = require("./_lib/supabase");
 const { OFFLINE_FARM } = require("../src/features/game/lib/landData");
 
+function createFreshStarterFarmState(baseState: any) {
+  try {
+    const fresh = JSON.parse(JSON.stringify(baseState || OFFLINE_FARM));
+    if (fresh.crops) {
+      Object.keys(fresh.crops).forEach((id) => {
+        delete fresh.crops[id].crop;
+      });
+    }
+    fresh.coins = 100;
+    return fresh;
+  } catch (_) {
+    return baseState || OFFLINE_FARM;
+  }
+}
+
 module.exports = async function handler(request: any, response: any) {
   response.setHeader("Cache-Control", "no-store");
   if (request.method !== "POST") {
@@ -28,6 +43,23 @@ module.exports = async function handler(request: any, response: any) {
 
     const database = getAdminDatabase();
     const now = new Date().toISOString();
+
+    // Smart Auto-Resolution: If fid is 1001 or unverified, check if an active player exists in Supabase
+    if (fid === 1001) {
+      try {
+        const { data: activePlayer } = await database
+          .from("players")
+          .select("id, farcaster_fid, has_land")
+          .eq("has_land", true)
+          .order("last_seen_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (activePlayer && activePlayer.farcaster_fid) {
+          fid = Number(activePlayer.farcaster_fid);
+        }
+      } catch (_) {}
+    }
 
     // 1. Auto-insert/update player data into Supabase `players` table
     let player;
@@ -75,11 +107,12 @@ module.exports = async function handler(request: any, response: any) {
 
         farm = existingFarm;
 
-        // Auto-create farm row if player.has_land is true but no farm row exists yet
+        // Auto-create fresh starter farm row if player.has_land is true but no farm row exists yet
         if (!farm && player.has_land) {
+          const freshState = createFreshStarterFarmState(OFFLINE_FARM);
           const { data: newFarm } = await database
             .from("game_farms")
-            .insert({ player_id: player.id, state: OFFLINE_FARM })
+            .insert({ player_id: player.id, state: freshState })
             .select("id, state, revision")
             .single();
 
@@ -103,7 +136,7 @@ module.exports = async function handler(request: any, response: any) {
     }
 
     // Fallback default state if farm is empty
-    const gameState = farm?.state || OFFLINE_FARM;
+    const gameState = farm?.state || createFreshStarterFarmState(OFFLINE_FARM);
     const farmId = farm?.id ? String(farm.id) : String(player?.id || 1);
     const revision = farm?.revision || 1;
 
