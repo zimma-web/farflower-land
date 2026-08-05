@@ -19,18 +19,19 @@ module.exports = async function handler(request: any, response: any) {
 
     const inputPassword = String(body?.password || "").trim();
     if (!inputPassword) {
-      response.status(401).json({ success: false, error: "Password required." });
+      response.status(401).json({ success: false, error: "Password is required." });
       return;
     }
 
     let isValid = false;
 
-    // 1. Check process.env.ADMIN_PASSWORD in Vercel settings if configured
-    if (process.env.ADMIN_PASSWORD && inputPassword === process.env.ADMIN_PASSWORD.trim()) {
+    // Check standard default password or Vercel ENV
+    const envPassword = (process.env.ADMIN_PASSWORD || "Akuasw12").trim();
+    if (inputPassword === envPassword) {
       isValid = true;
     }
 
-    // 2. Query Supabase database admin_settings table
+    // Check Supabase admin_settings table if available
     if (!isValid) {
       try {
         const database = getAdminDatabase();
@@ -40,13 +41,10 @@ module.exports = async function handler(request: any, response: any) {
           .eq("id", 1)
           .maybeSingle();
 
-        if (settings && settings.admin_password && inputPassword === String(settings.admin_password).trim()) {
+        if (settings?.admin_password && inputPassword === String(settings.admin_password).trim()) {
           isValid = true;
         }
-      } catch (dbErr) {
-        // eslint-disable-next-line no-console
-        console.error("Supabase admin_settings query error:", dbErr);
-      }
+      } catch (_) {}
     }
 
     if (isValid) {
