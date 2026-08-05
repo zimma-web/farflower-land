@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useActor } from "@xstate/react";
 import { Modal } from "components/ui/Modal";
 
@@ -23,8 +23,8 @@ import { hasFeatureAccess } from "lib/flags";
 import { WalletInUse } from "./components/WalletInUse";
 import { LoginSettings } from "./components/LoginSettings";
 import { NPC_WEARABLES } from "lib/npcs";
-import { SystemMessageWidget } from "features/announcements/SystemMessageWidget";
-import { Game3WinnerWidget } from "features/announcements/Game3WinnerWidget";
+import { AdminPanel } from "features/admin/AdminPanel";
+import { getRealFarcasterFid } from "./actions/login";
 
 import plankLogo from "assets/brand/plank_logo.png";
 
@@ -36,6 +36,23 @@ export const Auth: React.FC<Props> = ({ showOfflineModal }) => {
   const { authService } = useContext(AuthProvider.Context);
   const [authState] = useActor(authService);
   const { t } = useAppTranslation();
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+
+  useEffect(() => {
+    if (
+      window.location.search.includes("admin=1") ||
+      window.location.hash.includes("admin") ||
+      window.location.pathname.includes("/admin")
+    ) {
+      setShowAdminPanel(true);
+    } else {
+      getRealFarcasterFid().then((fid) => {
+        if (fid === 3334796) {
+          setShowAdminPanel(true);
+        }
+      });
+    }
+  }, []);
 
   return (
     <>
@@ -114,6 +131,8 @@ export const Auth: React.FC<Props> = ({ showOfflineModal }) => {
       {!authState.matches("connected") && !authState.matches("visiting") && (
         <LoginSettings />
       )}
+
+      <AdminPanel isOpen={showAdminPanel} onClose={() => setShowAdminPanel(false)} />
     </>
   );
 };

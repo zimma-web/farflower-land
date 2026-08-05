@@ -17,6 +17,12 @@ interface AdminPanelProps {
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return !!sessionStorage.getItem("farflower_admin_auth");
+  });
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passError, setPassError] = useState<string | null>(null);
+
   const [activeTab, setActiveTab] = useState<"overview" | "players" | "farm" | "settings">("overview");
   const [players, setPlayers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,6 +32,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
   const [jsonString, setJsonString] = useState("");
   const [message, setMessage] = useState<string | null>(null);
 
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPassError(null);
+    setIsLoading(true);
+
+    try {
+      const res = await window.fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: passwordInput }),
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (res.ok && data?.success) {
+        setIsAuthenticated(true);
+        sessionStorage.setItem("farflower_admin_auth", data.adminToken || "true");
+        setPassError(null);
+      } else {
+        setPassError(data?.error || "Password Admin Salah!");
+      }
+    } catch (_) {
+      setPassError("Gagal terhubung ke Server Authentication.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const loadData = async () => {
     setIsLoading(true);
     const data = await fetchAllPlayersFromSupabase();
@@ -34,12 +68,52 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && isAuthenticated) {
       loadData();
     }
-  }, [isOpen]);
+  }, [isOpen, isAuthenticated]);
 
   if (!isOpen) return null;
+
+  // Password Authentication Guard Screen
+  if (!isAuthenticated) {
+    return (
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+        <Panel className="w-full max-w-md p-4 relative bg-[#e2b97c] text-center">
+          <div className="flex items-center justify-between border-b-2 border-[#b58951] pb-2 mb-3">
+            <div className="flex items-center space-x-2">
+              <img src={SUNNYSIDE.icons.lock} className="h-6" />
+              <h2 className="text-base font-bold text-brown-900">👑 LOGIN ADMIN FARFLOWER</h2>
+            </div>
+            <Button onClick={onClose} className="px-2 py-0.5 text-xs">
+              X
+            </Button>
+          </div>
+
+          <form onSubmit={handleAdminLogin} className="space-y-3">
+            <p className="text-xs text-brown-900">
+              Silakan masukkan Password Admin untuk mengakses Control Panel & Database:
+            </p>
+
+            <input
+              type="password"
+              placeholder="Masukkan Password Admin..."
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              className="w-full p-2 text-sm rounded border border-brown-500 bg-amber-50 text-center font-bold"
+              autoFocus
+            />
+
+            {passError && <p className="text-xs text-red-600 font-bold">{passError}</p>}
+
+            <Button type="submit" disabled={isLoading} className="w-full py-1.5 text-sm">
+              {isLoading ? "Memverifikasi Ke Server..." : "🔑 Masuk Admin Panel"}
+            </Button>
+          </form>
+        </Panel>
+      </div>
+    );
+  }
 
   const totalPlayers = players.length;
   const activeLands = players.filter((p) => p.has_land).length;
